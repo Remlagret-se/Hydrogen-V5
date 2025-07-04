@@ -1,0 +1,50 @@
+type Query {
+  shop: Shop!
+  products(first: Int!): ProductConnection!
+  product(handle: String!): Product
+}
+
+type Shop {
+  id: ID!
+  name: String!
+  description: String
+}
+
+type Product {
+  id: ID!
+  handle: String!
+  title: String!
+  description: String
+  priceRange: PriceRange!
+}
+
+type ProductConnection {
+  edges: [ProductEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProductEdge {
+  node: Product!
+  cursor: String!
+}
+
+type PriceRange {
+  minVariantPrice: Money!
+  maxVariantPrice: Money!
+}
+
+type Money {
+  amount: Float!
+  currencyCode: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Mutation {
+  updateHello(message: String!): String
+} 
