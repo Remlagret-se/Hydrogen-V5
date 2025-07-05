@@ -1,21 +1,17 @@
-'use client'
-
-import { Fragment, useState } from 'react'
+import {Fragment, useState} from 'react';
+import {Dialog, DialogBackdrop, DialogPanel} from '@headlessui/react';
+import {XMarkIcon as XMarkIconOutline} from '@heroicons/react/24/outline';
+import {ChevronDownIcon} from '@heroicons/react/16/solid';
 import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-} from '@headlessui/react'
-import {
-  XMarkIcon as XMarkIconOutline,
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import { CheckIcon, ClockIcon, XMarkIcon as XMarkIconMini } from '@heroicons/react/20/solid'
-import { useOptimisticCart } from '@shopify/hydrogen';
-import { Link } from 'react-router';
-import type { CartApiQueryFragment } from 'storefrontapi.generated';
-import { useAside } from '~/components/Aside';
-import { Money } from '@shopify/hydrogen';
+  CheckIcon,
+  ClockIcon,
+  XMarkIcon as XMarkIconMini,
+} from '@heroicons/react/20/solid';
+import {useOptimisticCart} from '@shopify/hydrogen';
+import {Link} from '@remix-run/react';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {useAside} from '~/components/Aside';
+import {Money} from '@shopify/hydrogen';
 
 export type CartLayout = 'page' | 'aside';
 
@@ -40,7 +36,8 @@ const sampleProducts = [
     vendor: 'SKF',
     inStock: true,
     size: '17x40x12mm',
-    imageSrc: 'https://cdn.shopify.com/s/files/1/0000/0000/files/bearing-sample-1.jpg?v=1234567890',
+    imageSrc:
+      'https://cdn.shopify.com/s/files/1/0000/0000/files/bearing-sample-1.jpg?v=1234567890',
     imageAlt: 'SKF 6203-2RS1 djupspårkullager',
     quantity: 2,
   },
@@ -54,11 +51,12 @@ const sampleProducts = [
     inStock: false,
     leadTime: '2–3 veckor',
     size: '20x42x12mm',
-    imageSrc: 'https://cdn.shopify.com/s/files/1/0000/0000/files/bearing-sample-2.jpg?v=1234567890',
+    imageSrc:
+      'https://cdn.shopify.com/s/files/1/0000/0000/files/bearing-sample-2.jpg?v=1234567890',
     imageAlt: 'FAG 6004-C3 djupspårkullager',
     quantity: 1,
   },
-]
+];
 
 /**
  * The main cart component that displays the cart items and summary.
@@ -85,9 +83,12 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   }
 
   return (
-    <div style={{ backgroundColor: 'var(--color-background)' }}>
+    <div style={{backgroundColor: 'var(--color-background)'}}>
       <main className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: 'var(--gray-12)' }}>
+        <h1
+          className="text-3xl font-bold tracking-tight sm:text-4xl"
+          style={{color: 'var(--gray-12)'}}
+        >
           Varukorg
         </h1>
 
@@ -100,20 +101,27 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
                 Produkter i din varukorg
               </h2>
 
-              <ul role="list" className="divide-y border-t border-b" style={{ 
-                borderColor: 'var(--gray-6)',
-                '--tw-divide-opacity': '1',
-                'borderTopColor': 'var(--gray-6)',
-                'borderBottomColor': 'var(--gray-6)'
-              }}>
+              <ul
+                role="list"
+                className="divide-y border-t border-b"
+                style={{
+                  borderColor: 'var(--gray-6)',
+                  '--tw-divide-opacity': '1',
+                  borderTopColor: 'var(--gray-6)',
+                  borderBottomColor: 'var(--gray-6)',
+                }}
+              >
                 {products.map((product, productIdx) => (
                   <li key={product.id} className="flex py-6 sm:py-10">
                     <div className="shrink-0">
                       <img
                         alt={product.imageAlt || product.name}
-                        src={product.imageSrc || 'https://cdn.shopify.com/s/files/1/0000/0000/files/placeholder-bearing.jpg'}
+                        src={
+                          product.imageSrc ||
+                          'https://cdn.shopify.com/s/files/1/0000/0000/files/placeholder-bearing.jpg'
+                        }
                         className="size-24 rounded-md object-cover sm:size-48"
-                        style={{ backgroundColor: 'var(--gray-4)' }}
+                        style={{backgroundColor: 'var(--gray-4)'}}
                       />
                     </div>
 
@@ -122,24 +130,40 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
                         <div>
                           <div className="flex justify-between">
                             <h3 className="text-sm">
-                              <Link to={product.href} className="font-medium hover:opacity-80 transition-opacity" style={{ color: 'var(--gray-12)' }}>
+                              <Link
+                                to={product.href}
+                                className="font-medium hover:opacity-80 transition-opacity"
+                                style={{color: 'var(--gray-12)'}}
+                              >
                                 {product.name}
                               </Link>
                             </h3>
                           </div>
                           <div className="mt-1 flex text-sm">
-                            <p style={{ color: 'var(--gray-9)' }}>{product.vendor || 'Tillverkare'}</p>
+                            <p style={{color: 'var(--gray-9)'}}>
+                              {product.vendor || 'Tillverkare'}
+                            </p>
                             {product.size && (
-                              <p className="ml-4 border-l pl-4" style={{ 
-                                borderColor: 'var(--gray-6)',
-                                color: 'var(--gray-9)'
-                              }}>
+                              <p
+                                className="ml-4 border-l pl-4"
+                                style={{
+                                  borderColor: 'var(--gray-6)',
+                                  color: 'var(--gray-9)',
+                                }}
+                              >
                                 {product.size}
                               </p>
                             )}
                           </div>
-                          <p className="mt-1 text-sm font-medium" style={{ color: 'var(--gray-12)' }}>
-                            {isDemo ? `${product.price} ${product.currency}` : <Money data={product.price} />}
+                          <p
+                            className="mt-1 text-sm font-medium"
+                            style={{color: 'var(--gray-12)'}}
+                          >
+                            {isDemo ? (
+                              `${product.price} ${product.currency}`
+                            ) : (
+                              <Money data={product.price} />
+                            )}
                           </p>
                         </div>
 
@@ -155,7 +179,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
                                 backgroundColor: 'var(--color-background)',
                                 color: 'var(--gray-12)',
                                 outlineColor: 'var(--gray-6)',
-                                '--tw-ring-color': 'var(--blue-9)'
+                                '--tw-ring-color': 'var(--blue-9)',
                               }}
                             >
                               <option value={1}>1</option>
@@ -170,31 +194,48 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
                             <ChevronDownIcon
                               aria-hidden="true"
                               className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end sm:size-4"
-                              style={{ color: 'var(--gray-9)' }}
+                              style={{color: 'var(--gray-9)'}}
                             />
                           </div>
 
                           <div className="absolute top-0 right-0">
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               className="-m-2 inline-flex p-2 hover:opacity-70 transition-opacity"
-                              style={{ color: 'var(--gray-9)' }}
+                              style={{color: 'var(--gray-9)'}}
                             >
                               <span className="sr-only">Ta bort</span>
-                              <XMarkIconMini aria-hidden="true" className="size-5" />
+                              <XMarkIconMini
+                                aria-hidden="true"
+                                className="size-5"
+                              />
                             </button>
                           </div>
                         </div>
                       </div>
 
-                      <p className="mt-4 flex space-x-2 text-sm" style={{ color: 'var(--gray-11)' }}>
+                      <p
+                        className="mt-4 flex space-x-2 text-sm"
+                        style={{color: 'var(--gray-11)'}}
+                      >
                         {product.inStock ? (
-                          <CheckIcon aria-hidden="true" className="size-5 shrink-0 text-green-500" />
+                          <CheckIcon
+                            aria-hidden="true"
+                            className="size-5 shrink-0 text-green-500"
+                          />
                         ) : (
-                          <ClockIcon aria-hidden="true" className="size-5 shrink-0" style={{ color: 'var(--gray-6)' }} />
+                          <ClockIcon
+                            aria-hidden="true"
+                            className="size-5 shrink-0"
+                            style={{color: 'var(--gray-6)'}}
+                          />
                         )}
 
-                        <span>{product.inStock ? 'I lager' : `Leverans ${product.leadTime || '2-3 veckor'}`}</span>
+                        <span>
+                          {product.inStock
+                            ? 'I lager'
+                            : `Leverans ${product.leadTime || '2-3 veckor'}`}
+                        </span>
                       </p>
                     </div>
                   </li>
@@ -206,32 +247,78 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
             <section
               aria-labelledby="summary-heading"
               className="mt-16 rounded-lg px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
-              style={{ backgroundColor: 'var(--gray-2)' }}
+              style={{backgroundColor: 'var(--gray-2)'}}
             >
-              <h2 id="summary-heading" className="text-lg font-medium" style={{ color: 'var(--gray-12)' }}>
+              <h2
+                id="summary-heading"
+                className="text-lg font-medium"
+                style={{color: 'var(--gray-12)'}}
+              >
                 Ordersammanfattning
               </h2>
 
               <dl className="mt-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm" style={{ color: 'var(--gray-11)' }}>Delsumma</dt>
-                  <dd className="text-sm font-medium" style={{ color: 'var(--gray-12)' }}>679,00 kr</dd>
+                  <dt className="text-sm" style={{color: 'var(--gray-11)'}}>
+                    Delsumma
+                  </dt>
+                  <dd
+                    className="text-sm font-medium"
+                    style={{color: 'var(--gray-12)'}}
+                  >
+                    679,00 kr
+                  </dd>
                 </div>
-                <div className="flex items-center justify-between border-t pt-4" style={{ borderColor: 'var(--gray-6)' }}>
-                  <dt className="flex items-center text-sm" style={{ color: 'var(--gray-11)' }}>
+                <div
+                  className="flex items-center justify-between border-t pt-4"
+                  style={{borderColor: 'var(--gray-6)'}}
+                >
+                  <dt
+                    className="flex items-center text-sm"
+                    style={{color: 'var(--gray-11)'}}
+                  >
                     <span>Frakt</span>
                   </dt>
-                  <dd className="text-sm font-medium" style={{ color: 'var(--gray-12)' }}>Gratis</dd>
+                  <dd
+                    className="text-sm font-medium"
+                    style={{color: 'var(--gray-12)'}}
+                  >
+                    Gratis
+                  </dd>
                 </div>
-                <div className="flex items-center justify-between border-t pt-4" style={{ borderColor: 'var(--gray-6)' }}>
-                  <dt className="flex text-sm" style={{ color: 'var(--gray-11)' }}>
+                <div
+                  className="flex items-center justify-between border-t pt-4"
+                  style={{borderColor: 'var(--gray-6)'}}
+                >
+                  <dt
+                    className="flex text-sm"
+                    style={{color: 'var(--gray-11)'}}
+                  >
                     <span>Moms (25%)</span>
                   </dt>
-                  <dd className="text-sm font-medium" style={{ color: 'var(--gray-12)' }}>135,80 kr</dd>
+                  <dd
+                    className="text-sm font-medium"
+                    style={{color: 'var(--gray-12)'}}
+                  >
+                    135,80 kr
+                  </dd>
                 </div>
-                <div className="flex items-center justify-between border-t pt-4" style={{ borderColor: 'var(--gray-6)' }}>
-                  <dt className="text-base font-medium" style={{ color: 'var(--gray-12)' }}>Totalt</dt>
-                  <dd className="text-base font-medium" style={{ color: 'var(--gray-12)' }}>814,80 kr</dd>
+                <div
+                  className="flex items-center justify-between border-t pt-4"
+                  style={{borderColor: 'var(--gray-6)'}}
+                >
+                  <dt
+                    className="text-base font-medium"
+                    style={{color: 'var(--gray-12)'}}
+                  >
+                    Totalt
+                  </dt>
+                  <dd
+                    className="text-base font-medium"
+                    style={{color: 'var(--gray-12)'}}
+                  >
+                    814,80 kr
+                  </dd>
                 </div>
               </dl>
 
@@ -239,10 +326,10 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
                 <button
                   type="submit"
                   className="w-full rounded-md border border-transparent px-4 py-3 text-base font-medium text-white shadow-sm hover:opacity-90 focus:ring-2 focus:ring-offset-2 focus:outline-hidden transition-all"
-                  style={{ 
+                  style={{
                     backgroundColor: 'var(--blue-9)',
                     '--tw-ring-color': 'var(--blue-9)',
-                    '--tw-ring-offset-color': 'var(--gray-2)'
+                    '--tw-ring-offset-color': 'var(--gray-2)',
                   }}
                 >
                   Gå till kassan
@@ -278,30 +365,51 @@ function CartAside({cart}: {cart: CartApiQueryFragment | null}) {
               transition
               className="pointer-events-auto w-screen max-w-md transform transition duration-300 ease-in-out data-[closed]:translate-x-full"
             >
-              <div className="flex h-full flex-col overflow-y-scroll shadow-xl" style={{ backgroundColor: 'var(--color-background)' }}>
+              <div
+                className="flex h-full flex-col overflow-y-scroll shadow-xl"
+                style={{backgroundColor: 'var(--color-background)'}}
+              >
                 <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                   <div className="flex items-start justify-between">
-                    <h2 className="text-lg font-medium" style={{ color: 'var(--gray-12)' }}>Varukorg</h2>
+                    <h2
+                      className="text-lg font-medium"
+                      style={{color: 'var(--gray-12)'}}
+                    >
+                      Varukorg
+                    </h2>
                     <div className="ml-3 flex h-7 items-center">
                       <button
                         type="button"
                         onClick={handleClose}
                         className="relative -m-2 p-2 hover:opacity-70 transition-opacity"
-                        style={{ color: 'var(--gray-9)' }}
+                        style={{color: 'var(--gray-9)'}}
                       >
                         <span className="absolute -inset-0.5" />
                         <span className="sr-only">Stäng panel</span>
-                        <XMarkIconOutline aria-hidden="true" className="size-6" />
+                        <XMarkIconOutline
+                          aria-hidden="true"
+                          className="size-6"
+                        />
                       </button>
                     </div>
                   </div>
 
                   <div className="mt-8">
                     <div className="flow-root">
-                      <ul role="list" className="-my-6 divide-y" style={{ '--tw-divide-opacity': '1', 'borderColor': 'var(--gray-6)' }}>
+                      <ul
+                        role="list"
+                        className="-my-6 divide-y"
+                        style={{
+                          '--tw-divide-opacity': '1',
+                          borderColor: 'var(--gray-6)',
+                        }}
+                      >
                         {sampleProducts.map((product) => (
                           <li key={product.id} className="flex py-6">
-                            <div className="size-24 shrink-0 overflow-hidden rounded-md" style={{ backgroundColor: 'var(--gray-4)' }}>
+                            <div
+                              className="size-24 shrink-0 overflow-hidden rounded-md"
+                              style={{backgroundColor: 'var(--gray-4)'}}
+                            >
                               <img
                                 alt={product.imageAlt}
                                 src={product.imageSrc}
@@ -312,21 +420,35 @@ function CartAside({cart}: {cart: CartApiQueryFragment | null}) {
                             <div className="ml-4 flex flex-1 flex-col">
                               <div>
                                 <div className="flex justify-between text-base font-medium">
-                                  <h3 style={{ color: 'var(--gray-12)' }}>
-                                    <Link to={product.href}>{product.name}</Link>
+                                  <h3 style={{color: 'var(--gray-12)'}}>
+                                    <Link to={product.href}>
+                                      {product.name}
+                                    </Link>
                                   </h3>
-                                  <p className="ml-4" style={{ color: 'var(--gray-12)' }}>{product.price} {product.currency}</p>
+                                  <p
+                                    className="ml-4"
+                                    style={{color: 'var(--gray-12)'}}
+                                  >
+                                    {product.price} {product.currency}
+                                  </p>
                                 </div>
-                                <p className="mt-1 text-sm" style={{ color: 'var(--gray-9)' }}>{product.vendor}</p>
+                                <p
+                                  className="mt-1 text-sm"
+                                  style={{color: 'var(--gray-9)'}}
+                                >
+                                  {product.vendor}
+                                </p>
                               </div>
                               <div className="flex flex-1 items-end justify-between text-sm">
-                                <p style={{ color: 'var(--gray-9)' }}>Antal {product.quantity}</p>
+                                <p style={{color: 'var(--gray-9)'}}>
+                                  Antal {product.quantity}
+                                </p>
 
                                 <div className="flex">
                                   <button
                                     type="button"
                                     className="font-medium hover:opacity-80 transition-opacity"
-                                    style={{ color: 'var(--blue-9)' }}
+                                    style={{color: 'var(--blue-9)'}}
                                   >
                                     Ta bort
                                   </button>
@@ -340,30 +462,36 @@ function CartAside({cart}: {cart: CartApiQueryFragment | null}) {
                   </div>
                 </div>
 
-                <div className="border-t px-4 py-6 sm:px-6" style={{ borderColor: 'var(--gray-6)' }}>
+                <div
+                  className="border-t px-4 py-6 sm:px-6"
+                  style={{borderColor: 'var(--gray-6)'}}
+                >
                   <div className="flex justify-between text-base font-medium">
-                    <p style={{ color: 'var(--gray-12)' }}>Delsumma</p>
-                    <p style={{ color: 'var(--gray-12)' }}>679,00 kr</p>
+                    <p style={{color: 'var(--gray-12)'}}>Delsumma</p>
+                    <p style={{color: 'var(--gray-12)'}}>679,00 kr</p>
                   </div>
-                  <p className="mt-0.5 text-sm" style={{ color: 'var(--gray-9)' }}>
+                  <p
+                    className="mt-0.5 text-sm"
+                    style={{color: 'var(--gray-9)'}}
+                  >
                     Frakt och moms beräknas vid kassan.
                   </p>
                   <div className="mt-6">
                     <button
                       className="flex w-full items-center justify-center rounded-md border border-transparent px-6 py-3 text-base font-medium text-white shadow-sm hover:opacity-90 transition-opacity"
-                      style={{ backgroundColor: 'var(--blue-9)' }}
+                      style={{backgroundColor: 'var(--blue-9)'}}
                     >
                       Gå till kassan
                     </button>
                   </div>
                   <div className="mt-6 flex justify-center text-center text-sm">
-                    <p style={{ color: 'var(--gray-9)' }}>
+                    <p style={{color: 'var(--gray-9)'}}>
                       eller{' '}
                       <button
                         type="button"
                         onClick={handleClose}
                         className="font-medium hover:opacity-80 transition-opacity"
-                        style={{ color: 'var(--blue-9)' }}
+                        style={{color: 'var(--blue-9)'}}
                       >
                         Fortsätt handla
                         <span aria-hidden="true"> &rarr;</span>
@@ -384,21 +512,22 @@ function CartEmpty({hidden = false, layout}: CartEmptyProps) {
   const {close} = useAside();
   return (
     <div hidden={hidden} className="text-center py-16">
-      <p className="text-lg mb-4" style={{ color: 'var(--gray-11)' }}>
+      <p className="text-lg mb-4" style={{color: 'var(--gray-11)'}}>
         Din varukorg är tom
       </p>
-      <p className="text-sm mb-8" style={{ color: 'var(--gray-9)' }}>
+      <p className="text-sm mb-8" style={{color: 'var(--gray-9)'}}>
         Lägg till produkter för att komma igång med din beställning
       </p>
-      <Link 
-        to="/collections" 
-        onClick={close} 
+      <Link
+        to="/collections"
+        onClick={close}
         prefetch="viewport"
         className="inline-block px-6 py-3 text-white font-medium rounded-md hover:opacity-90 transition-opacity"
-        style={{ backgroundColor: 'var(--blue-9)' }}
+        style={{backgroundColor: 'var(--blue-9)'}}
       >
         Fortsätt handla →
       </Link>
     </div>
   );
-} 
+}
+

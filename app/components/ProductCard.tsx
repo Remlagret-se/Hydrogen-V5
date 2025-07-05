@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from '@remix-run/react';
 import { Image, Money } from '@shopify/hydrogen';
 import type { Product } from '@shopify/hydrogen/storefront-api-types';
 

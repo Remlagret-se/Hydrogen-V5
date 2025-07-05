@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from '@remix-run/react';
 import { Image, Money } from '@shopify/hydrogen';
 import type { PredictiveSearchReturn } from '~/lib/search';
 
@@ -11,6 +11,7 @@ interface SearchResultsPredictiveProps {
     state: 'loading' | 'idle';
     closeSearch: () => void;
   }) => React.ReactNode) | null;
+  isLoading?: boolean;
 }
 
 interface SearchResultsPredictiveProductsProps {
@@ -66,8 +67,36 @@ function urlWithTrackingParams({
   return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
 }
 
-export function SearchResultsPredictive({ children }: SearchResultsPredictiveProps) {
-  // This is a placeholder implementation that would normally use fetcher data
+function LoadingSpinner() {
+  return (
+    <div className="flex justify-center items-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  );
+}
+
+function NoResults({term}: {term: string}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 px-4">
+      <p className="text-gray-500 text-center">
+        Inga resultat hittades för "{term}"
+      </p>
+      <p className="text-sm text-gray-400 mt-2 text-center">
+        Försök med andra sökord eller kontrollera stavningen
+      </p>
+    </div>
+  );
+}
+
+export function SearchResultsPredictive({
+  children,
+  isLoading = false,
+}: SearchResultsPredictiveProps) {
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  // Detta är en placeholder-implementation som normalt skulle använda fetcher-data
   const mockData = {
     items: {
       articles: [],
@@ -77,7 +106,7 @@ export function SearchResultsPredictive({ children }: SearchResultsPredictivePro
       queries: [],
     },
     total: 0,
-    term: { current: '' },
+    term: {current: ''},
     state: 'idle' as const,
     closeSearch: () => {},
   };
@@ -86,7 +115,11 @@ export function SearchResultsPredictive({ children }: SearchResultsPredictivePro
     return null;
   }
 
-  return <div className="predictive-search-results">{children(mockData)}</div>;
+  return (
+    <div className="predictive-search-results">
+      {children(mockData)}
+    </div>
+  );
 }
 
 // Compound components
@@ -95,11 +128,16 @@ SearchResultsPredictive.Products = function SearchResultsPredictiveProducts({
   closeSearch,
   term,
 }: SearchResultsPredictiveProductsProps) {
-  if (!products?.length) return null;
+  if (!products?.length) {
+    return term?.current ? <NoResults term={term.current} /> : null;
+  }
 
   return (
     <div className="predictive-search-result space-y-3">
-      <ul className="space-y-2">
+      <div className="px-4 py-2 bg-gray-50">
+        <h3 className="text-sm font-medium text-gray-900">Produkter</h3>
+      </div>
+      <ul className="divide-y divide-gray-200">
         {products.map((product) => {
           const productUrl = urlWithTrackingParams({
             baseUrl: `/products/${product.handle}`,
@@ -110,32 +148,36 @@ SearchResultsPredictive.Products = function SearchResultsPredictiveProducts({
           const image = product?.selectedOrFirstAvailableVariant?.image;
           
           return (
-            <li key={product.id} className="predictive-search-result-item">
+            <li key={product.id} className="group">
               <Link 
                 to={productUrl} 
                 onClick={closeSearch}
-                className="flex items-center space-x-3 p-2 rounded-md hover:opacity-80 transition-opacity"
-                style={{ backgroundColor: 'var(--gray-2)' }}
+                className="flex items-center p-4 hover:bg-gray-50 transition duration-150"
               >
                 {image && (
-                  <div className="w-12 h-12 rounded-md overflow-hidden shrink-0" style={{ backgroundColor: 'var(--gray-4)' }}>
+                  <div className="flex-shrink-0 w-16 h-16 rounded-md border overflow-hidden">
                     <Image
-                      alt={image.altText ?? ''}
+                      alt={image.altText ?? product.title}
                       src={image.url}
-                      width={48}
-                      height={48}
-                      className="w-full h-full object-cover"
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover object-center"
                     />
                   </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate" style={{ color: 'var(--gray-12)' }}>
-                    {product.title}
-                  </p>
-                  {price && (
-                    <p className="text-sm" style={{ color: 'var(--gray-11)' }}>
-                      <Money data={price} />
-                    </p>
+                <div className="ml-4 flex-1 flex flex-col">
+                  <div className="flex justify-between">
+                    <h4 className="text-sm font-medium text-gray-900 group-hover:text-primary">
+                      {product.title}
+                    </h4>
+                    {price && (
+                      <p className="text-sm font-medium text-gray-900">
+                        <Money data={price} />
+                      </p>
+                    )}
+                  </div>
+                  {product.vendor && (
+                    <p className="mt-1 text-sm text-gray-500">{product.vendor}</p>
                   )}
                 </div>
               </Link>
@@ -143,6 +185,17 @@ SearchResultsPredictive.Products = function SearchResultsPredictiveProducts({
           );
         })}
       </ul>
+      {products.length > 0 && (
+        <div className="px-4 py-3 bg-gray-50">
+          <Link
+            to={`/search?q=${term.current}`}
+            onClick={closeSearch}
+            className="text-sm text-primary hover:text-primary/80"
+          >
+            Visa alla resultat ({products.length})
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
@@ -307,13 +360,14 @@ SearchResultsPredictive.Empty = function SearchResultsPredictiveEmpty({
     return <>{children}</>;
   }
   
-  return (
-    <div className="py-8 text-center">
-      <p className="text-sm" style={{ color: 'var(--gray-11)' }}>
-        {term.current
-          ? `Inga resultat för "${term.current}"`
-          : 'Börja skriva för att söka produkter'}
+  return term.current ? (
+    <NoResults term={term.current} />
+  ) : (
+    <div className="flex items-center justify-center py-12 px-4">
+      <p className="text-gray-500 text-center">
+        Börja skriva för att söka produkter
       </p>
     </div>
   );
 }; 
+

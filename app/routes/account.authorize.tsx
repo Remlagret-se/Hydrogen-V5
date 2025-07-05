@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from 'react-router';
+import {useLoaderData} from '@remix-run/react';
 
 export async function loader({request, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -57,3 +57,4 @@ const CUSTOMER_ACCESS_TOKEN_CREATE_MUTATION = `#graphql
     }
   }
 ` as const; 
+

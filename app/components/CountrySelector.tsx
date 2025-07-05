@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { NavLink, useLocation, useNavigate } from 'react-router';
+import { NavLink, useLocation, useNavigate } from '@remix-run/react';
 import { ClientOnly } from './ClientOnly';
 import {
   markets,

@@ -1,15 +1,15 @@
-import { Fragment, Suspense, useState, useEffect, useRef } from 'react';
-import { Await, NavLink, useAsyncValue } from 'react-router';
+import {Fragment, Suspense, useState, useEffect, useRef} from 'react';
+import {Await, NavLink, useAsyncValue} from 'react-router';
 import {
   type CartViewPayload,
   useAnalytics,
   useOptimisticCart,
 } from '@shopify/hydrogen';
-import type { HeaderQuery, CartApiQueryFragment } from 'storefrontapi.generated';
-import { useAside } from '~/components/Aside';
-import { ClientOnly } from './ClientOnly';
-import { CountrySelector } from './CountrySelector';
-import type { Market } from '~/lib/utils/localization';
+import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
+import {useAside} from '~/components/Aside';
+import {ClientOnly} from './ClientOnly';
+import {CountrySelector} from './CountrySelector';
+import type {Market} from '~/lib/utils/localization';
 import {
   Dialog,
   DialogBackdrop,
@@ -51,10 +51,23 @@ export default function HeaderClient({
 
   // Extrahera kollektioner från header query
   const allCollections = header?.collections?.nodes || [];
-  
+
   // Använd marknadens språk för att visa rätt handle
-  const marketKey = currentMarket ? (currentMarket.pathPrefix === '' ? 'se' : currentMarket.pathPrefix.slice(1) as any) : 'se';
-  
+  const marketKey = currentMarket
+    ? currentMarket.pathPrefix === ''
+      ? 'se'
+      : (currentMarket.pathPrefix.slice(1) as any)
+    : 'se';
+
+  // Helper function to get collection image by handle
+  const getCollectionImage = (handle: string) => {
+    const collection = allCollections.find((col) => col.handle === handle);
+    return (
+      collection?.image?.url ||
+      'https://via.placeholder.com/400x400?text=No+Image'
+    );
+  };
+
   // Navigationsstruktur med lokaliserade handles
   const navigation = {
     categories: [
@@ -65,30 +78,42 @@ export default function HeaderClient({
           {
             name: 'Magnetlager',
             href: `/collections/${marketKey === 'se' ? 'magnetlager' : 'magnetic-bearings'}`,
-            imageSrc: 'https://picsum.photos/400/400?random=4',
+            imageSrc: getCollectionImage(
+              marketKey === 'se' ? 'magnetlager' : 'magnetic-bearings',
+            ),
             imageAlt: 'Magnetlager',
             description: 'Avancerade magnetlager',
+            icon: MagnifyingGlassIcon,
           },
           {
             name: 'Kullager',
             href: `/collections/${marketKey === 'se' ? 'kullager' : 'ball-bearings'}`,
-            imageSrc: 'https://picsum.photos/400/400?random=1',
+            imageSrc: getCollectionImage(
+              marketKey === 'se' ? 'kullager' : 'ball-bearings',
+            ),
             imageAlt: 'Kullager',
             description: 'Högkvalitativa kullager för alla behov',
+            icon: MagnifyingGlassIcon,
           },
           {
             name: 'Rullager',
             href: `/collections/${marketKey === 'se' ? 'rullager' : 'roller-bearings'}`,
-            imageSrc: 'https://picsum.photos/400/400?random=2',
+            imageSrc: getCollectionImage(
+              marketKey === 'se' ? 'rullager' : 'roller-bearings',
+            ),
             imageAlt: 'Rullager',
             description: 'Pålitliga rullager för tunga belastningar',
+            icon: MagnifyingGlassIcon,
           },
           {
             name: 'Glidlager',
             href: `/collections/${marketKey === 'se' ? 'glidlager' : 'plain-bearings'}`,
-            imageSrc: 'https://picsum.photos/400/400?random=3',
+            imageSrc: getCollectionImage(
+              marketKey === 'se' ? 'glidlager' : 'plain-bearings',
+            ),
             imageAlt: 'Glidlager',
             description: 'Underhållsfria glidlager',
+            icon: MagnifyingGlassIcon,
           },
         ],
         sections: [
@@ -96,36 +121,51 @@ export default function HeaderClient({
             id: 'kullager',
             name: 'Kullager',
             items: [
-              { name: 'Spårkullager', href: `/collections/sparkullager` },
-              { name: 'Vinkelkontaktlager', href: `/collections/vinkelkontaktlager` },
-              { name: 'Sfäriska kullager', href: `/collections/sfariska-kullager` },
-              { name: 'Axialkullager', href: `/collections/axialkullager` },
-              { name: 'Fyrpunktskontaktlager', href: `/collections/fyrpunktskontaktlager` },
-              { name: 'Insatslager', href: `/collections/insatslager` },
+              {name: 'Spårkullager', href: `/collections/sparkullager`},
+              {
+                name: 'Vinkelkontaktlager',
+                href: `/collections/vinkelkontaktlager`,
+              },
+              {
+                name: 'Sfäriska kullager',
+                href: `/collections/sfariska-kullager`,
+              },
+              {name: 'Axialkullager', href: `/collections/axialkullager`},
+              {
+                name: 'Fyrpunktskontaktlager',
+                href: `/collections/fyrpunktskontaktlager`,
+              },
+              {name: 'Insatslager', href: `/collections/insatslager`},
             ],
           },
           {
             id: 'rullager',
             name: 'Rullager',
             items: [
-              { name: 'Cylindriska rullager', href: `/collections/cylindriska-rullager` },
-              { name: 'Koniska rullager', href: `/collections/koniska-rullager` },
-              { name: 'Sfäriska rullager', href: `/collections/sfariska-rullager` },
-              { name: 'Nållager', href: `/collections/nallager` },
-              { name: 'Axialrullager', href: `/collections/axialrullager` },
-              { name: 'Kryssrullager', href: `/collections/kryssrullager` },
+              {
+                name: 'Cylindriska rullager',
+                href: `/collections/cylindriska-rullager`,
+              },
+              {name: 'Koniska rullager', href: `/collections/koniska-rullager`},
+              {
+                name: 'Sfäriska rullager',
+                href: `/collections/sfariska-rullager`,
+              },
+              {name: 'Nållager', href: `/collections/nallager`},
+              {name: 'Axialrullager', href: `/collections/axialrullager`},
+              {name: 'Kryssrullager', href: `/collections/kryssrullager`},
             ],
           },
           {
             id: 'glidlager',
             name: 'Glidlager & Speciallager',
             items: [
-              { name: 'Glidbussningar', href: `/collections/glidbussningar` },
-              { name: 'Glidplattor', href: `/collections/glidplattor` },
-              { name: 'Kulleder', href: `/collections/kulleder` },
-              { name: 'Ledlager', href: `/collections/ledlager` },
-              { name: 'Magnetlager', href: `/collections/magnetlager` },
-              { name: 'Speciallager', href: `/collections/speciallager` },
+              {name: 'Glidbussningar', href: `/collections/glidbussningar`},
+              {name: 'Glidplattor', href: `/collections/glidplattor`},
+              {name: 'Kulleder', href: `/collections/kulleder`},
+              {name: 'Ledlager', href: `/collections/ledlager`},
+              {name: 'Magnetlager', href: `/collections/magnetlager`},
+              {name: 'Speciallager', href: `/collections/speciallager`},
             ],
           },
         ],
@@ -154,39 +194,38 @@ export default function HeaderClient({
             id: 'remmar',
             name: 'Remmar',
             items: [
-              { name: 'Kilremmar', href: `/collections/kilremmar` },
-              { name: 'Kuggremmar', href: `/collections/kuggremmar` },
-              { name: 'Multiremmar', href: `/collections/multiremmar` },
-              { name: 'Rundremmar', href: `/collections/rundremmar` },
-              { name: 'Variatorremmar', href: `/collections/variatorremmar` },
+              {name: 'Kilremmar', href: `/collections/kilremmar`},
+              {name: 'Kuggremmar', href: `/collections/kuggremmar`},
+              {name: 'Multiremmar', href: `/collections/multiremmar`},
+              {name: 'Rundremmar', href: `/collections/rundremmar`},
+              {name: 'Variatorremmar', href: `/collections/variatorremmar`},
             ],
           },
           {
             id: 'tillbehor',
             name: 'Tillbehör',
             items: [
-              { name: 'Kilremskivor', href: `/collections/kilremskivor` },
-              { name: 'Klämbussningar', href: `/collections/klambussningar` },
-              { name: 'Spännrullar', href: `/collections/spannrullar` },
+              {name: 'Kilremskivor', href: `/collections/kilremskivor`},
+              {name: 'Klämbussningar', href: `/collections/klambussningar`},
+              {name: 'Spännrullar', href: `/collections/spannrullar`},
             ],
           },
         ],
       },
     ],
-    pages: [
-      { name: 'Tätningar', href: '/collections/tatningar' },
-      { name: 'Linjärteknik', href: '/collections/linjarteknik' },
-      { name: 'Om oss', href: '/pages/om-oss' },
-      { name: 'Kontakt', href: '/pages/kontakt' },
-    ],
+    pages: [],
   };
 
   return (
-    <div className="bg-white" style={{ backgroundColor: 'var(--dark-1)' }}>
+    <div className="bg-white" style={{backgroundColor: 'var(--dark-1)'}}>
       {/* Wrap Headless UI komponenter i ClientOnly */}
       <ClientOnly>
         {/* Mobile menu */}
-        <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="relative z-40 lg:hidden">
+        <Dialog
+          open={mobileMenuOpen}
+          onClose={setMobileMenuOpen}
+          className="relative z-40 lg:hidden"
+        >
           <DialogBackdrop
             transition
             className="fixed inset-0 bg-black/25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
@@ -195,7 +234,7 @@ export default function HeaderClient({
             <DialogPanel
               transition
               className="relative flex w-full max-w-xs transform flex-col overflow-y-auto pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:-translate-x-full"
-              style={{ backgroundColor: 'var(--dark-3)' }}
+              style={{backgroundColor: 'var(--dark-3)'}}
             >
               <div className="flex px-4 pt-5 pb-2">
                 <button
@@ -225,24 +264,36 @@ export default function HeaderClient({
                 </div>
                 <TabPanels as={Fragment}>
                   {navigation.categories.map((category) => (
-                    <TabPanel key={category.name} className="space-y-10 px-4 pt-10 pb-8">
+                    <TabPanel
+                      key={category.name}
+                      className="space-y-10 px-4 pt-10 pb-8"
+                    >
                       <div className="grid grid-cols-2 gap-x-4">
                         {category.featured.map((item) => (
-                          <div key={item.name} className="group relative text-sm">
+                          <div
+                            key={item.name}
+                            className="group relative text-sm"
+                          >
                             <img
                               alt={item.imageAlt}
                               src={item.imageSrc}
                               className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75"
                             />
-                            <NavLink 
-                              to={item.href} 
-                              className="mt-6 block font-medium text-white"
+                            <NavLink
+                              to={item.href}
+                              className="mt-6 flex items-center gap-2 font-medium text-white group-hover:text-green-9"
                               onClick={() => setMobileMenuOpen(false)}
                             >
-                              <span aria-hidden="true" className="absolute inset-0 z-10" />
+                              <span
+                                aria-hidden="true"
+                                className="absolute inset-0 z-10"
+                              />
                               {item.name}
                             </NavLink>
-                            <p aria-hidden="true" className="mt-1 text-gray-400">
+                            <p
+                              aria-hidden="true"
+                              className="mt-1 text-gray-400"
+                            >
                               Se produkter
                             </p>
                           </div>
@@ -250,7 +301,10 @@ export default function HeaderClient({
                       </div>
                       {category.sections.map((section) => (
                         <div key={section.name}>
-                          <p id={`${category.id}-${section.id}-heading-mobile`} className="font-medium text-white">
+                          <p
+                            id={`${category.id}-${section.id}-heading-mobile`}
+                            className="font-medium text-white"
+                          >
                             {section.name}
                           </p>
                           <ul
@@ -260,8 +314,8 @@ export default function HeaderClient({
                           >
                             {section.items.map((item) => (
                               <li key={item.name} className="flow-root">
-                                <NavLink 
-                                  to={item.href} 
+                                <NavLink
+                                  to={item.href}
                                   className="-m-2 block p-2 text-gray-300 hover:text-white"
                                   onClick={() => setMobileMenuOpen(false)}
                                 >
@@ -280,8 +334,8 @@ export default function HeaderClient({
               <div className="space-y-6 border-t border-gray-600 px-4 py-6">
                 {navigation.pages.map((page) => (
                   <div key={page.name} className="flow-root">
-                    <NavLink 
-                      to={page.href} 
+                    <NavLink
+                      to={page.href}
                       className="-m-2 block p-2 font-medium text-white hover:text-green-9"
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -293,11 +347,17 @@ export default function HeaderClient({
 
               <div className="space-y-6 border-t border-gray-600 px-4 py-6">
                 <div className="flow-root">
-                  <Suspense fallback={<div className="-m-2 block p-2 font-medium text-white">Konto</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="-m-2 block p-2 font-medium text-white">
+                        Konto
+                      </div>
+                    }
+                  >
                     <Await resolve={isLoggedIn}>
                       {(loggedIn) => (
-                        <NavLink 
-                          to="/account" 
+                        <NavLink
+                          to="/account"
                           className="-m-2 block p-2 font-medium text-white hover:text-green-9"
                           onClick={() => setMobileMenuOpen(false)}
                         >
@@ -308,8 +368,8 @@ export default function HeaderClient({
                   </Suspense>
                 </div>
                 <div className="flow-root">
-                  <NavLink 
-                    to="/account" 
+                  <NavLink
+                    to="/account"
                     className="-m-2 block p-2 font-medium text-white hover:text-green-9"
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -317,8 +377,8 @@ export default function HeaderClient({
                   </NavLink>
                 </div>
                 <div className="flow-root">
-                  <a 
-                    href="/pages/kontakt" 
+                  <a
+                    href="/pages/kontakt"
                     className="-m-2 block p-2 font-medium text-white hover:text-green-9"
                     onClick={() => setMobileMenuOpen(false)}
                   >
@@ -331,14 +391,19 @@ export default function HeaderClient({
         </Dialog>
       </ClientOnly>
 
-      <header className="relative" style={{ backgroundColor: 'var(--dark-3)' }}>
+      <header className="relative" style={{backgroundColor: 'var(--dark-3)'}}>
         {/* Promotional bar med grön accent */}
-        <p className="flex h-10 items-center justify-center px-4 text-sm font-medium text-white sm:px-6 lg:px-8" 
-           style={{ backgroundColor: 'var(--green-9)' }}>
+        <p
+          className="flex h-10 items-center justify-center px-4 text-sm font-medium text-white sm:px-6 lg:px-8"
+          style={{backgroundColor: 'var(--green-9)'}}
+        >
           Fri frakt på beställningar över 1000 kr
         </p>
 
-        <nav aria-label="Top" className="mx-auto max-w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
+        <nav
+          aria-label="Top"
+          className="mx-auto max-w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16"
+        >
           <div className="border-b border-gray-600">
             <div className="flex h-16 lg:h-20 items-center">
               <button
@@ -369,7 +434,7 @@ export default function HeaderClient({
                   <div className="flex h-full space-x-6 xl:space-x-8 2xl:space-x-10">
                     {navigation.categories.map((category) => (
                       <Popover key={category.name} className="flex">
-                        {({ close }) => (
+                        {({close}) => (
                           <>
                             <div className="relative flex">
                               <PopoverButton className="relative z-10 -mb-px flex items-center border-b-2 border-transparent pt-px text-sm lg:text-base xl:text-lg font-medium text-white transition-colors duration-200 ease-out hover:text-gray-300 data-[open]:border-green-9 data-[open]:text-green-9">
@@ -381,63 +446,96 @@ export default function HeaderClient({
                               transition
                               className="absolute inset-x-0 top-full text-sm transition data-[closed]:opacity-0 data-[enter]:duration-200 data-[enter]:ease-out data-[leave]:duration-150 data-[leave]:ease-in z-50"
                             >
-                          {/* Shadow */}
-                          <div aria-hidden="true" className="absolute inset-0 top-1/2 shadow-lg" style={{ backgroundColor: 'var(--dark-2)' }} />
+                              {/* Shadow */}
+                              <div
+                                aria-hidden="true"
+                                className="absolute inset-0 top-1/2 shadow-lg"
+                                style={{backgroundColor: 'var(--dark-2)'}}
+                              />
 
-                          <div className="relative" style={{ backgroundColor: 'var(--dark-2)' }}>
-                            <div className="mx-auto max-w-7xl xl:max-w-full px-8 xl:px-12 2xl:px-16">
-                              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 xl:gap-x-12 gap-y-10 py-16 xl:py-20">
-                                <div className={`${category.featured.length > 2 ? 'col-span-2 lg:col-span-2 xl:col-span-2' : 'col-start-2 lg:col-start-3 xl:col-start-3'} grid grid-cols-2 gap-x-8`}>
-                                  {category.featured.map((item) => (
-                                    <div key={item.name} className="group relative text-base sm:text-sm">
-                                      <img
-                                        alt={item.imageAlt}
-                                        src={item.imageSrc}
-                                        className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75 transition-opacity"
-                                      />
-                                      <NavLink 
-                                        to={item.href} 
-                                        className="mt-6 block font-medium text-white group-hover:text-green-9"
-                                        onClick={() => close()}
-                                      >
-                                        <span aria-hidden="true" className="absolute inset-0 z-10" />
-                                        {item.name}
-                                      </NavLink>
-                                      <p aria-hidden="true" className="mt-1 text-gray-400">
-                                        {item.description}
-                                      </p>
-                                    </div>
-                                  ))}
-                                </div>
-                                <div className="row-start-1 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 xl:gap-x-12 gap-y-10 text-sm">
-                                  {category.sections.map((section) => (
-                                    <div key={section.name}>
-                                      <p id={`${section.name}-heading`} className="font-medium text-white text-base lg:text-lg">
-                                        {section.name}
-                                      </p>
-                                      <ul
-                                        role="list"
-                                        aria-labelledby={`${section.name}-heading`}
-                                        className="mt-6 space-y-4 sm:mt-4 sm:space-y-4"
-                                      >
-                                        {section.items.map((item) => (
-                                          <li key={item.name} className="flex">
-                                            <NavLink 
-                                              to={item.href} 
-                                              className="text-gray-300 hover:text-white transition-colors text-sm lg:text-base"
+                              <div
+                                className="relative"
+                                style={{backgroundColor: 'var(--dark-2)'}}
+                              >
+                                <div className="mx-auto max-w-7xl xl:max-w-full px-8 xl:px-12 2xl:px-16">
+                                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 xl:gap-x-12 gap-y-10 py-16 xl:py-20">
+                                    <div
+                                      className={`${category.featured.length > 2 ? 'col-span-2 lg:col-span-2 xl:col-span-2' : 'col-start-2 lg:col-start-3 xl:col-start-3'} grid grid-cols-2 gap-x-8`}
+                                    >
+                                      {category.featured.map((item) => {
+                                        const IconComponent = item.icon;
+                                        return (
+                                          <div
+                                            key={item.name}
+                                            className="group relative text-base sm:text-sm"
+                                          >
+                                            <div className="relative aspect-square w-full rounded-lg bg-gray-100 overflow-hidden">
+                                              <img
+                                                alt={item.imageAlt}
+                                                src={item.imageSrc}
+                                                className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
+                                              />
+                                              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+                                              <div className="absolute top-4 left-4">
+                                                <IconComponent className="h-8 w-8 text-white/90 group-hover:text-white transition-colors" />
+                                              </div>
+                                            </div>
+                                            <NavLink
+                                              to={item.href}
+                                              className="mt-6 flex items-center gap-2 font-medium text-white group-hover:text-green-9"
                                               onClick={() => close()}
                                             >
+                                              <span
+                                                aria-hidden="true"
+                                                className="absolute inset-0 z-10"
+                                              />
                                               {item.name}
                                             </NavLink>
-                                          </li>
-                                        ))}
-                                      </ul>
+                                            <p
+                                              aria-hidden="true"
+                                              className="mt-1 text-gray-400"
+                                            >
+                                              {item.description}
+                                            </p>
+                                          </div>
+                                        );
+                                      })}
                                     </div>
-                                  ))}
+                                    <div className="row-start-1 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 xl:gap-x-12 gap-y-10 text-sm">
+                                      {category.sections.map((section) => (
+                                        <div key={section.name}>
+                                          <p
+                                            id={`${section.name}-heading`}
+                                            className="font-medium text-white text-base lg:text-lg"
+                                          >
+                                            {section.name}
+                                          </p>
+                                          <ul
+                                            role="list"
+                                            aria-labelledby={`${section.name}-heading`}
+                                            className="mt-6 space-y-4 sm:mt-4 sm:space-y-4"
+                                          >
+                                            {section.items.map((item) => (
+                                              <li
+                                                key={item.name}
+                                                className="flex"
+                                              >
+                                                <NavLink
+                                                  to={item.href}
+                                                  className="text-gray-300 hover:text-white transition-colors text-sm lg:text-base"
+                                                  onClick={() => close()}
+                                                >
+                                                  {item.name}
+                                                </NavLink>
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
                             </PopoverPanel>
                           </>
                         )}
@@ -460,12 +558,6 @@ export default function HeaderClient({
               {/* Desktop fallback menu för SSR */}
               <div className="hidden lg:ml-8 xl:ml-12 lg:block lg:self-stretch data-[client]:hidden">
                 <div className="flex h-full space-x-6 xl:space-x-8 2xl:space-x-10">
-                  <NavLink
-                    to="/collections"
-                    className="flex items-center text-sm lg:text-base xl:text-lg font-medium text-white hover:text-gray-300 transition-colors"
-                  >
-                    Lager
-                  </NavLink>
                   {navigation.pages.map((page) => (
                     <NavLink
                       key={page.name}
@@ -483,17 +575,29 @@ export default function HeaderClient({
                 <CountrySelector currentMarket={currentMarket} />
 
                 <div className="hidden lg:flex lg:items-center lg:space-x-4 xl:space-x-6">
-                  <Suspense fallback={<span className="text-sm lg:text-base font-medium text-white">Konto</span>}>
+                  <Suspense
+                    fallback={
+                      <span className="text-sm lg:text-base font-medium text-white">
+                        Konto
+                      </span>
+                    }
+                  >
                     <Await resolve={isLoggedIn}>
                       {(loggedIn) => (
-                        <NavLink to="/account" className="text-sm lg:text-base font-medium text-white hover:text-gray-300 transition-colors">
+                        <NavLink
+                          to="/account"
+                          className="text-sm lg:text-base font-medium text-white hover:text-gray-300 transition-colors"
+                        >
                           {loggedIn ? 'Mitt konto' : 'Logga in'}
                         </NavLink>
                       )}
                     </Await>
                   </Suspense>
                   <span aria-hidden="true" className="h-6 w-px bg-gray-600" />
-                  <NavLink to="/account" className="text-sm lg:text-base font-medium text-white hover:text-gray-300 transition-colors">
+                  <NavLink
+                    to="/account"
+                    className="text-sm lg:text-base font-medium text-white hover:text-gray-300 transition-colors"
+                  >
                     Skapa konto
                   </NavLink>
                 </div>
@@ -505,7 +609,10 @@ export default function HeaderClient({
                     className="p-2 text-gray-400 hover:text-white transition-colors"
                   >
                     <span className="sr-only">Sök</span>
-                    <MagnifyingGlassIcon aria-hidden="true" className="h-6 w-6 lg:h-7 lg:w-7" />
+                    <MagnifyingGlassIcon
+                      aria-hidden="true"
+                      className="h-6 w-6 lg:h-7 lg:w-7"
+                    />
                   </button>
                 </div>
 
@@ -544,7 +651,13 @@ function CartToggle({cart}: {cart: Promise<CartApiQueryFragment | null>}) {
         aria-hidden="true"
         className="h-6 w-6 lg:h-7 lg:w-7 flex-shrink-0 text-gray-400 group-hover:text-white transition-colors"
       />
-      <Suspense fallback={<span className="ml-2 text-sm lg:text-base font-medium text-white">0</span>}>
+      <Suspense
+        fallback={
+          <span className="ml-2 text-sm lg:text-base font-medium text-white">
+            0
+          </span>
+        }
+      >
         <Await resolve={cart}>
           <CartBadgeCount />
         </Await>
@@ -566,7 +679,12 @@ function CartBadgeCount() {
   );
 }
 
-export function HeaderMenu({menu, primaryDomainUrl, viewport, publicStoreDomain}: any) {
+export function HeaderMenu({
+  menu,
+  primaryDomainUrl,
+  viewport,
+  publicStoreDomain,
+}: any) {
   // This is kept for compatibility but not used in the new design
   return null;
-} 
+}

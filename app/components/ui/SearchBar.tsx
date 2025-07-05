@@ -1,16 +1,17 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useDebounce } from '@app/hooks/useDebounce';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import {useState, useEffect} from 'react';
+import {useDebounce} from '@app/hooks/useDebounce';
+import {motion, AnimatePresence} from 'framer-motion';
+import {Search} from 'lucide-react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
 }
 
-export function SearchBar({ onSearch, placeholder = 'Sök produkter...' }: SearchBarProps) {
+export function SearchBar({
+  onSearch,
+  placeholder = 'Sök produkter...',
+}: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -20,7 +21,7 @@ export function SearchBar({ onSearch, placeholder = 'Sök produkter...' }: Searc
       setDebouncedValue(query);
     },
     300,
-    [query]
+    [query],
   );
 
   useEffect(() => {
@@ -29,8 +30,8 @@ export function SearchBar({ onSearch, placeholder = 'Sök produkter...' }: Searc
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{opacity: 0, y: -20}}
+      animate={{opacity: 1, y: 0}}
       className="w-full max-w-md mx-auto relative"
     >
       <div className="relative">
@@ -45,21 +46,19 @@ export function SearchBar({ onSearch, placeholder = 'Sök produkter...' }: Searc
           className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
         />
       </div>
-      
+
       <AnimatePresence>
         {isFocused && query && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={{opacity: 0, y: -10}}
+            animate={{opacity: 1, y: 0}}
+            exit={{opacity: 0, y: -10}}
             className="absolute w-full mt-2 bg-white rounded-lg shadow-lg border p-2"
           >
-            <p className="text-sm text-gray-500">
-              Söker efter: {query}
-            </p>
+            <p className="text-sm text-gray-500">Söker efter: {query}</p>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
   );
-} 
+}

@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from 'react-router';
+import {useLoaderData} from '@remix-run/react';
 import {Product} from '@shopify/hydrogen/storefront-api-types';
 import {ProductPage} from '~/components/examples/ProductPage';
 
@@ -99,3 +99,4 @@ const PRODUCT_QUERY = `#graphql
     }
   }
 ` as const; 
+

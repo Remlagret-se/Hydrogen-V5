@@ -1,11 +1,9 @@
-'use client';
-
 // Produktkort - Anpassad från Tailwind UI Plus för Hydrogen
-import { Link } from 'react-router';
-import { Image, Money } from '@shopify/hydrogen';
-import { StarIcon } from '@heroicons/react/20/solid';
-import { HeartIcon } from '@heroicons/react/24/outline';
-import type { Product } from '@shopify/hydrogen/storefront-api-types';
+import {Link} from '@remix-run/react';
+import {Image, Money} from '@shopify/hydrogen';
+import {StarIcon} from '@heroicons/react/20/solid';
+import {HeartIcon} from '@heroicons/react/24/outline';
+import type {Product} from '@shopify/hydrogen/storefront-api-types';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -17,9 +15,13 @@ interface ProductCardProps {
   variant?: 'default' | 'simple' | 'detailed';
 }
 
-export function ProductCard({ product, loading = 'lazy', variant = 'default' }: ProductCardProps) {
+export function ProductCard({
+  product,
+  loading = 'lazy',
+  variant = 'default',
+}: ProductCardProps) {
   const firstVariant = product.variants?.nodes?.[0];
-  
+
   // Early return if no variant or price data
   if (!firstVariant || !firstVariant.price) {
     return (
@@ -51,12 +53,12 @@ export function ProductCard({ product, loading = 'lazy', variant = 'default' }: 
       </div>
     );
   }
-  
+
   // Simulera produktdata - i verkligheten kommer detta från GraphQL/metafields
   const rating = 4.5;
   const reviewCount = 38;
   const colors = ['bg-gray-900', 'bg-blue-600', 'bg-red-600'];
-  
+
   if (variant === 'simple') {
     return (
       <div className="group relative">
@@ -133,7 +135,7 @@ export function ProductCard({ product, loading = 'lazy', variant = 'default' }: 
             </h3>
             <p className="text-xs text-gray-500">{product.vendor}</p>
           </div>
-          
+
           {/* Rating */}
           <div className="flex items-center">
             <div className="flex items-center">
@@ -142,7 +144,7 @@ export function ProductCard({ product, loading = 'lazy', variant = 'default' }: 
                   key={index}
                   className={classNames(
                     rating > index ? 'text-yellow-400' : 'text-gray-200',
-                    'h-4 w-4 flex-shrink-0'
+                    'h-4 w-4 flex-shrink-0',
                   )}
                   aria-hidden="true"
                 />
@@ -160,7 +162,7 @@ export function ProductCard({ product, loading = 'lazy', variant = 'default' }: 
                   key={color}
                   className={classNames(
                     color,
-                    'h-3 w-3 rounded-full border border-black border-opacity-10'
+                    'h-3 w-3 rounded-full border border-black border-opacity-10',
                   )}
                 />
               ))}
@@ -226,9 +228,9 @@ interface ProductGridProps {
   };
 }
 
-export function ProductGrid({ 
-  products, 
-  columns = { mobile: 1, tablet: 2, desktop: 5 } 
+export function ProductGrid({
+  products,
+  columns = {mobile: 1, tablet: 2, desktop: 5},
 }: ProductGridProps) {
   const gridClasses = classNames(
     'grid gap-x-4 gap-y-8',
@@ -236,7 +238,7 @@ export function ProductGrid({
     'sm:grid-cols-2',
     'lg:grid-cols-4',
     'xl:grid-cols-5',
-    '2xl:grid-cols-5'
+    '2xl:grid-cols-5',
   );
 
   return (
@@ -267,12 +269,13 @@ export function ProductCardSkeleton() {
   );
 }
 
-export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
+export function ProductGridSkeleton({count = 8}: {count?: number}) {
   return (
     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-      {Array.from({ length: count }).map((_, index) => (
+      {Array.from({length: count}).map((_, index) => (
         <ProductCardSkeleton key={index} />
       ))}
     </div>
   );
-} 
+}
+

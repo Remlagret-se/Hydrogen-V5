@@ -12,12 +12,15 @@ import {
   useRouteLoaderData,
 } from 'react-router';
 import favicon from '~/assets/favicon.svg';
-import {FOOTER_QUERY, HEADER_QUERY, ROOT_COLLECTIONS_QUERY} from '~/lib/fragments';
+import {
+  FOOTER_QUERY,
+  HEADER_QUERY,
+  ROOT_COLLECTIONS_QUERY,
+} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
-import {PageLayout} from './components/PageLayout';
-import {AsideProvider} from './components/Aside';
+
 import {
   getMarketFromRequest,
   getLocaleFromRequest,
@@ -26,8 +29,7 @@ import {
   getStorefrontLocale,
   type Market,
 } from '~/lib/utils/localization';
-import { MarketDetectionBanner } from '~/components/CountrySelector';
-import { useState, useEffect } from 'react';
+import {useNonce, CartProvider} from '@shopify/hydrogen';
 
 export type RootLoader = typeof loader;
 
@@ -65,13 +67,17 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
  */
 export function links() {
   return [
+    {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css'},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
+      crossOrigin: 'anonymous',
     },
     {
       rel: 'preconnect',
       href: 'https://shop.app',
+      crossOrigin: 'anonymous',
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
@@ -79,20 +85,20 @@ export function links() {
 
 export async function loader(args: LoaderFunctionArgs) {
   const {request} = args;
-  
+
   // Hämta marknad från request
   const currentMarket = getMarketFromRequest(request);
   const locale = getLocaleFromRequest(request);
-  
+
   // Detektera användarens föredragna marknad
   const cookieMarket = getMarketFromCookie(request);
   const detectedMarket = cookieMarket || detectUserPreferredMarket(request);
-  
+
   // Uppdatera storefront context med rätt locale (med null-safety)
   if (args.context?.storefront) {
     args.context.storefront.i18n = locale;
   }
-  
+
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
 
@@ -107,10 +113,12 @@ export async function loader(args: LoaderFunctionArgs) {
     publicStoreDomain: env?.PUBLIC_STORE_DOMAIN,
     currentMarket,
     detectedMarket,
-    shop: storefront ? getShopAnalytics({
-      storefront,
-      publicStorefrontId: env?.PUBLIC_STOREFRONT_ID,
-    }) : null,
+    shop: storefront
+      ? getShopAnalytics({
+          storefront,
+          publicStorefrontId: env?.PUBLIC_STOREFRONT_ID,
+        })
+      : null,
     consent: {
       checkoutDomain: env?.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env?.PUBLIC_STOREFRONT_API_TOKEN,
@@ -164,19 +172,20 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   const {storefront, customerAccount, cart} = context;
 
   // defer the footer query (below the fold)
-  const footer = storefront
-    ?.query(FOOTER_QUERY, {
-      cache: CacheLong(),
-      variables: {
-        footerMenuHandle: 'footer', // Adjust to your footer menu handle
-        language: storefront.i18n?.language || 'EN',
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    }) || Promise.resolve(null);
+  const footer =
+    storefront
+      ?.query(FOOTER_QUERY, {
+        cache: CacheLong(),
+        variables: {
+          footerMenuHandle: 'footer', // Adjust to your footer menu handle
+          language: storefront.i18n?.language || 'EN',
+        },
+      })
+      .catch((error) => {
+        // Log query errors, but don't throw them so the page can still render
+        console.error(error);
+        return null;
+      }) || Promise.resolve(null);
   return {
     cart: cart?.get() || null,
     isLoggedIn: customerAccount?.isLoggedIn() || false,
@@ -186,63 +195,55 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 export function Layout({children}: {children?: React.ReactNode}) {
   const data = useRouteLoaderData<RootLoader>('root');
-  const [showMarketBanner, setShowMarketBanner] = useState(false);
-  
-  useEffect(() => {
-    if (data?.currentMarket && data?.detectedMarket) {
-      const currentKey = data.currentMarket.pathPrefix === '' ? 'se' : data.currentMarket.pathPrefix.slice(1);
-      if (currentKey !== data.detectedMarket) {
-        setShowMarketBanner(true);
-      }
-    }
-  }, [data?.currentMarket, data?.detectedMarket]);
-
-  const handleAcceptMarket = () => {
-    if (data?.detectedMarket) {
-      document.cookie = `selected_market=${data.detectedMarket}; path=/; max-age=${60 * 60 * 24 * 365}`;
-      window.location.href = '/'; // Redirect to let the server handle the new market
-    }
-  };
-
-  const handleDismissMarket = () => {
-    setShowMarketBanner(false);
-    document.cookie = `market_banner_dismissed=true; path=/; max-age=${60 * 60 * 24 * 7}`;
-  };
+  const nonce = useNonce();
 
   return (
-    <html lang={data?.currentMarket?.language.toLowerCase() || 'sv'}>
+    <html
+      lang={data?.currentMarket?.language.toLowerCase() || 'sv'}
+      className="h-full"
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <link rel="stylesheet" href={tailwindCss}></link>
         <link rel="stylesheet" href={resetStyles}></link>
-        <link rel="stylesheet" href={appStyles}></link>
         <Meta />
         <Links />
       </head>
-      <body style={{ backgroundColor: 'var(--color-background)', color: 'var(--gray-12)' }}>
+      <body
+        style={{
+          backgroundColor: 'var(--color-background)',
+          color: 'var(--gray-12)',
+        }}
+        className="h-full"
+      >
         <Analytics.Provider
           cart={data?.cart}
           shop={data?.shop}
           consent={data?.consent}
         >
-          <AsideProvider>
-            <PageLayout {...data} currentMarket={data?.currentMarket}>
-              {children}
-              {showMarketBanner && data?.detectedMarket && data?.currentMarket && (
-                <MarketDetectionBanner
-                  detectedMarket={data.detectedMarket}
-                  currentMarket={data.currentMarket}
-                  onAccept={handleAcceptMarket}
-                  onDismiss={handleDismissMarket}
-                />
-              )}
-            </PageLayout>
-          </AsideProvider>
+          <div>
+            <header style={{backgroundColor: 'var(--gray-2)', padding: '1rem'}}>
+              <h1>Remlagret</h1>
+              <p style={{margin: 0, fontSize: '0.875rem', opacity: 0.8}}>
+                Powered by Hydrogen 2025.5.0{' '}
+                {data?.shop?.name ? `• ${data.shop.name}` : ''}
+              </p>
+            </header>
+            <main>{children}</main>
+            <footer
+              style={{
+                backgroundColor: 'var(--gray-2)',
+                padding: '1rem',
+                marginTop: '2rem',
+              }}
+            >
+              <p>© 2024 Remlagret. All rights reserved.</p>
+            </footer>
+          </div>
         </Analytics.Provider>
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );
@@ -267,86 +268,85 @@ export function ErrorBoundary() {
   const is404 = errorStatus === 404;
 
   return (
-    <div 
+    <div
       className="min-h-screen flex items-center justify-center px-4"
-      style={{ backgroundColor: 'var(--color-background)' }}
+      style={{backgroundColor: 'var(--color-background)'}}
     >
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
-          <h1 
+          <h1
             className="text-6xl font-bold mb-4"
-            style={{ color: 'var(--gray-12)' }}
+            style={{color: 'var(--gray-12)'}}
           >
             {errorStatus}
           </h1>
-          <h2 
+          <h2
             className="text-2xl font-semibold mb-4"
-            style={{ color: 'var(--gray-11)' }}
+            style={{color: 'var(--gray-11)'}}
           >
             {is404 ? 'Sidan hittades inte' : 'Ett fel inträffade'}
           </h2>
-          <p 
-            className="text-base mb-8"
-            style={{ color: 'var(--gray-9)' }}
-          >
-            {is404 
+          <p className="text-base mb-8" style={{color: 'var(--gray-9)'}}>
+            {is404
               ? 'Sidan du söker efter finns inte eller har flyttats.'
-              : 'Vi ber om ursäkt för besväret. Försök igen om en stund.'
-            }
+              : 'Vi ber om ursäkt för besväret. Försök igen om en stund.'}
           </p>
         </div>
-        
+
         {errorMessage && !is404 && (
-          <div 
+          <div
             className="p-4 rounded-lg mb-8 text-left"
-            style={{ 
+            style={{
               backgroundColor: 'var(--gray-3)',
-              borderColor: 'var(--gray-6)'
+              borderColor: 'var(--gray-6)',
             }}
           >
-            <h3 className="font-medium mb-2" style={{ color: 'var(--gray-12)' }}>
+            <h3 className="font-medium mb-2" style={{color: 'var(--gray-12)'}}>
               Teknisk information:
             </h3>
-            <pre 
+            <pre
               className="text-sm overflow-x-auto"
-              style={{ color: 'var(--gray-11)' }}
+              style={{color: 'var(--gray-11)'}}
             >
               {errorMessage}
             </pre>
           </div>
         )}
-        
+
         <div className="space-y-4">
           <a
             href="/"
             className="inline-block w-full px-6 py-3 text-white font-medium rounded-md hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: 'var(--blue-9)' }}
+            style={{backgroundColor: 'var(--blue-9)'}}
           >
             Tillbaka till startsidan
           </a>
-          
+
           {is404 && (
             <a
               href="/collections"
               className="inline-block w-full px-6 py-3 font-medium rounded-md border hover:opacity-80 transition-opacity"
-              style={{ 
+              style={{
                 backgroundColor: 'var(--color-background)',
                 borderColor: 'var(--gray-6)',
-                color: 'var(--gray-12)'
+                color: 'var(--gray-12)',
               }}
             >
               Bläddra bland produkter
             </a>
           )}
         </div>
-        
-        <div className="mt-8 pt-8 border-t" style={{ borderColor: 'var(--gray-6)' }}>
-          <p className="text-sm" style={{ color: 'var(--gray-9)' }}>
+
+        <div
+          className="mt-8 pt-8 border-t"
+          style={{borderColor: 'var(--gray-6)'}}
+        >
+          <p className="text-sm" style={{color: 'var(--gray-9)'}}>
             Behöver du hjälp? Kontakta vår{' '}
-            <a 
-              href="/pages/kontakt" 
+            <a
+              href="/pages/kontakt"
               className="underline hover:opacity-80 transition-opacity"
-              style={{ color: 'var(--blue-9)' }}
+              style={{color: 'var(--blue-9)'}}
             >
               kundservice
             </a>

@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from 'react-router';
+import {useLoaderData} from '@remix-run/react';
 
 export async function loader({context}: LoaderFunctionArgs) {
   // Return early if storefront is not available
@@ -46,3 +46,4 @@ const COLLECTIONS_QUERY = `#graphql
     }
   }
 ` as const; 
+

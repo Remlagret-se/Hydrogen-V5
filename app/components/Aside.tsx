@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useCallback, useRef, useEffect, useState} from 'react';
-import {useNavigate} from 'react-router';
+import {useNavigate} from '@remix-run/react';
 
 interface AsideContextType {
   open: () => void;
@@ -127,3 +127,4 @@ export function AsideComponent({type, heading, children}: AsideProps) {
     </div>
   );
 } 
+

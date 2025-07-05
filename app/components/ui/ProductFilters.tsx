@@ -1,8 +1,6 @@
-'use client';
-
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import {useState} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {ChevronDown} from 'lucide-react';
 
 interface Filter {
   id: string;
@@ -15,8 +13,10 @@ interface ProductFiltersProps {
   onFilterChange: (filters: Record<string, string[]>) => void;
 }
 
-export function ProductFilters({ filters, onFilterChange }: ProductFiltersProps) {
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
+export function ProductFilters({filters, onFilterChange}: ProductFiltersProps) {
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, string[]>
+  >({});
   const [expandedFilter, setExpandedFilter] = useState<string | null>(null);
 
   const handleFilterChange = (filterId: string, value: string) => {
@@ -25,8 +25,8 @@ export function ProductFilters({ filters, onFilterChange }: ProductFiltersProps)
       const newValue = current.includes(value)
         ? current.filter((v) => v !== value)
         : [...current, value];
-      
-      const updated = { ...prev, [filterId]: newValue };
+
+      const updated = {...prev, [filterId]: newValue};
       onFilterChange(updated);
       return updated;
     });
@@ -37,12 +37,14 @@ export function ProductFilters({ filters, onFilterChange }: ProductFiltersProps)
       {filters.map((filter) => (
         <motion.div
           key={filter.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{opacity: 0, y: 20}}
+          animate={{opacity: 1, y: 0}}
           className="border rounded-lg overflow-hidden"
         >
           <button
-            onClick={() => setExpandedFilter(expandedFilter === filter.id ? null : filter.id)}
+            onClick={() =>
+              setExpandedFilter(expandedFilter === filter.id ? null : filter.id)
+            }
             className="w-full p-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
           >
             <h3 className="font-semibold">{filter.name}</h3>
@@ -52,13 +54,13 @@ export function ProductFilters({ filters, onFilterChange }: ProductFiltersProps)
               }`}
             />
           </button>
-          
+
           <AnimatePresence>
             {expandedFilter === filter.id && (
               <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
+                initial={{height: 0, opacity: 0}}
+                animate={{height: 'auto', opacity: 1}}
+                exit={{height: 0, opacity: 0}}
                 className="p-4 space-y-2"
               >
                 {filter.options.map((option) => (
@@ -82,4 +84,4 @@ export function ProductFilters({ filters, onFilterChange }: ProductFiltersProps)
       ))}
     </div>
   );
-} 
+}

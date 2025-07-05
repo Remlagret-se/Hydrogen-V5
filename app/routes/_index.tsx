@@ -1,40 +1,57 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData, useRouteLoaderData} from 'react-router';
+import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {HomePage} from '~/components/HomePage';
-import type {RootLoader} from '~/root';
+import {COLLECTION_QUERY, MENU_QUERY} from '~/lib/fragments';
+import {useLoaderData} from '@remix-run/react';
 
-export async function loader({context}: LoaderFunctionArgs) {
+export async function loader({context, request}: LoaderFunctionArgs) {
   const {storefront} = context;
 
-  // Return early if storefront is not available
-  if (!storefront) {
-    return {
-      products: [],
-    };
-  }
-
-  const {products} = await storefront.query(FEATURED_PRODUCTS_QUERY);
-
-  return {
-    products: products.nodes,
+  // Get market from URL instead of session
+  const url = new URL(request.url);
+  const pathPrefix = url.pathname.split('/')[1] || '';
+  const currentMarket = {
+    pathPrefix: pathPrefix ? `/${pathPrefix}` : '',
+    language: pathPrefix.toUpperCase() || 'SV'
   };
+
+  try {
+    const [menuData, collectionsData] = await Promise.all([
+      storefront.query(MENU_QUERY),
+      storefront.query(COLLECTION_QUERY),
+    ]);
+
+    // Fetch specific collections
+    const sparkullager = collectionsData.collections?.nodes?.find(
+      (collection) => collection?.handle === 'sparkullager',
+    );
+    const sfariskaKullager = collectionsData.collections?.nodes?.find(
+      (collection) => collection?.handle === 'sfariska-kullager',
+    );
+
+    return defer({
+      menu: menuData.menu,
+      collections: collectionsData.collections?.nodes || [],
+      sparkullager,
+      sfariskaKullager,
+      currentMarket,
+    });
+  } catch (error) {
+    console.error('Error loading data:', error);
+    throw new Response('Error loading shop data', {
+      status: 500,
+      statusText: error.message,
+    });
+  }
 }
 
 export default function Index() {
-  const {products} = useLoaderData<typeof loader>();
-  const rootData = useRouteLoaderData<RootLoader>('root');
-  
-  if (!rootData) {
-    return null;
-  }
-  
-  const {header, currentMarket} = rootData;
-  
-  // Extract collections data from header query with null-safety
-  const collections = header?.collections?.nodes || [];
-  const sparkullager = header?.sparkullager;
-  const sfariskaKullager = header?.sfariskaKullager;
-  const menu = header?.menu;
+  const {
+    menu,
+    collections,
+    sparkullager,
+    sfariskaKullager,
+    currentMarket,
+  } = useLoaderData<typeof loader>();
 
   return (
     <HomePage
@@ -42,55 +59,8 @@ export default function Index() {
       collections={collections}
       sparkullager={sparkullager}
       sfariskaKullager={sfariskaKullager}
-      products={products}
+      products={[]}
       currentMarket={currentMarket}
-      cart={rootData.cart}
     />
   );
 }
-
-const FEATURED_PRODUCTS_QUERY = `#graphql
-  query FeaturedProducts {
-    products(first: 8) {
-      nodes {
-        id
-        title
-        handle
-        vendor
-        featuredImage {
-          id
-          url
-          altText
-          width
-          height
-        }
-        priceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        compareAtPriceRange {
-          minVariantPrice {
-            amount
-            currencyCode
-          }
-        }
-        variants(first: 1) {
-          nodes {
-            id
-            price {
-              amount
-              currencyCode
-            }
-            compareAtPrice {
-              amount
-              currencyCode
-            }
-            availableForSale
-          }
-        }
-      }
-    }
-  }
-` as const; 

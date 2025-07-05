@@ -1,4 +1,4 @@
-import { useLoaderData } from 'react-router';
+import { useLoaderData } from '@remix-run/react';
 
 export async function loader() {
   // Placeholder loader, returns static data
@@ -19,3 +19,4 @@ export default function Hero() {
     </section>
   );
 }
+

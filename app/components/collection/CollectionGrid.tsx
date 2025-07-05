@@ -1,14 +1,12 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useCollectionStore, Product } from '~/lib/collectionStore';
-import { ProductCard } from '../ui/ProductCard';
-import { SearchBar } from '../ui/SearchBar';
-import { CollectionFilters } from './CollectionFilters';
-import { MobileFilters } from './MobileFilters';
-import { Filter, ChevronDown, X } from 'lucide-react';
-import { useSearchParams } from 'react-router';
+import {useEffect, useState} from 'react';
+import {motion, AnimatePresence} from 'framer-motion';
+import {useCollectionStore, Product} from '~/lib/collectionStore';
+import {ProductCard} from '../ui/ProductCard';
+import {SearchBar} from '../ui/SearchBar';
+import {CollectionFilters} from './CollectionFilters';
+import {MobileFilters} from './MobileFilters';
+import {Filter, ChevronDown, X} from 'lucide-react';
+import {useSearchParams} from '@remix-run/react';
 
 // Exempel på filteralternativ
 const categories = ['T-shirts', 'Hoodies', 'Byxor', 'Skor'];
@@ -87,7 +85,7 @@ const exampleProducts: Product[] = [
 export function CollectionGrid() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  
+
   const {
     products,
     filteredProducts,
@@ -115,7 +113,7 @@ export function CollectionGrid() {
   }, [setProducts]);
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: {opacity: 0},
     show: {
       opacity: 1,
       transition: {
@@ -125,49 +123,49 @@ export function CollectionGrid() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { 
-      opacity: 1, 
+    hidden: {opacity: 0, y: 20},
+    show: {
+      opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: 'spring',
         stiffness: 300,
-        damping: 24
-      }
+        damping: 24,
+      },
     },
-    exit: { 
-      opacity: 0, 
+    exit: {
+      opacity: 0,
       y: -20,
       transition: {
-        duration: 0.2
-      }
-    }
+        duration: 0.2,
+      },
+    },
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="container mx-auto px-4 py-8"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      transition={{duration: 0.5}}
     >
       {/* Sökfält */}
-      <motion.div 
+      <motion.div
         className="mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        initial={{opacity: 0, y: -20}}
+        animate={{opacity: 1, y: 0}}
+        transition={{delay: 0.2}}
       >
         <SearchBar onSearch={setSearchQuery} />
       </motion.div>
 
       <div className="flex gap-8">
         {/* Mobil filter-knapp */}
-        <motion.div 
+        <motion.div
           className="lg:hidden mb-4"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
+          initial={{opacity: 0, x: -20}}
+          animate={{opacity: 1, x: 0}}
+          transition={{delay: 0.3}}
         >
           <button
             type="button"
@@ -180,11 +178,11 @@ export function CollectionGrid() {
         </motion.div>
 
         {/* Filter */}
-        <motion.div 
+        <motion.div
           className="hidden lg:block w-80 flex-shrink-0"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
+          initial={{opacity: 0, x: -20}}
+          animate={{opacity: 1, x: 0}}
+          transition={{delay: 0.4}}
         >
           <CollectionFilters />
         </motion.div>
@@ -192,11 +190,11 @@ export function CollectionGrid() {
         {/* Produktgrid */}
         <div className="flex-1">
           {/* Sortering */}
-          <motion.div 
+          <motion.div
             className="flex justify-end mb-6"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            initial={{opacity: 0, y: -20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{delay: 0.5}}
           >
             <select
               className="px-4 py-2 border rounded-lg hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
@@ -212,7 +210,7 @@ export function CollectionGrid() {
           </motion.div>
 
           {/* Produktgrid */}
-          <motion.div 
+          <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             variants={containerVariants}
             initial="hidden"
@@ -220,11 +218,7 @@ export function CollectionGrid() {
           >
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  variants={itemVariants}
-                  layout
-                >
+                <motion.div key={product.id} variants={itemVariants} layout>
                   <ProductCard
                     id={product.id}
                     title={product.title}
@@ -240,14 +234,16 @@ export function CollectionGrid() {
           {/* Inga resultat */}
           <AnimatePresence>
             {filteredProducts.length === 0 && (
-              <motion.div 
+              <motion.div
                 className="text-center py-12"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
+                initial={{opacity: 0, scale: 0.95}}
+                animate={{opacity: 1, scale: 1}}
+                exit={{opacity: 0, scale: 0.95}}
+                transition={{duration: 0.3}}
               >
-                <h3 className="text-xl font-semibold mb-2">Inga produkter hittades</h3>
+                <h3 className="text-xl font-semibold mb-2">
+                  Inga produkter hittades
+                </h3>
                 <p className="text-gray-600">
                   Prova att ändra dina filter eller söktermer
                 </p>
@@ -264,4 +260,5 @@ export function CollectionGrid() {
       />
     </motion.div>
   );
-} 
+}
+

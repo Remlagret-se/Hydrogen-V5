@@ -1,5 +1,4 @@
-import {createStorefrontClient} from '@shopify/hydrogen';
-import {createCookieSessionStorage} from '@shopify/remix-oxygen';
+import {createStorefrontClient, StorefrontClient} from '@shopify/hydrogen';
 import type {AppLoadContext} from '@shopify/remix-oxygen';
 
 export async function createAppLoadContext(
@@ -7,112 +6,25 @@ export async function createAppLoadContext(
   env: Env,
   executionContext: ExecutionContext,
 ): Promise<AppLoadContext> {
-  console.log('=== FORCE WORKING CONTEXT ===');
-  console.log('Request URL:', request.url);
-  
-  // Force return a working context with mock storefront for testing
-  const mockStorefront = {
-    query: async (query: string, options?: any) => {
-      console.log('Mock storefront query called:', query.substring(0, 100));
-      
-      // Return mock collection data
-      if (query.includes('collection(handle:')) {
-        return {
-          collection: {
-            id: 'gid://shopify/Collection/12345',
-            title: 'Sparkullager',
-            handle: options?.variables?.handle || 'sparkullager',
-            description: 'En fantastisk kollektion av sparkullager från vår butik.',
-            products: {
-              edges: [
-                {
-                  node: {
-                    id: 'gid://shopify/Product/1',
-                    title: 'Premium Sparkullager',
-                    handle: 'premium-sparkullager',
-                    vendor: 'SKF',
-                    productType: 'Kullager',
-                    featuredImage: {
-                      url: 'https://picsum.photos/400/400?random=1',
-                      altText: 'Premium Sparkullager',
-                      width: 400,
-                      height: 400
-                    },
-                    priceRange: {
-                      minVariantPrice: {
-                        amount: '299.00',
-                        currencyCode: 'SEK'
-                      },
-                      maxVariantPrice: {
-                        amount: '299.00',
-                        currencyCode: 'SEK'
-                      }
-                    },
-                    variants: {
-                      nodes: [{
-                        id: 'gid://shopify/ProductVariant/1',
-                        availableForSale: true,
-                        price: {
-                          amount: '299.00',
-                          currencyCode: 'SEK'
-                        }
-                      }]
-                    }
-                  }
-                },
-                {
-                  node: {
-                    id: 'gid://shopify/Product/2',
-                    title: 'Standard Sparkullager',
-                    handle: 'standard-sparkullager',
-                    vendor: 'FAG',
-                    productType: 'Kullager',
-                    featuredImage: {
-                      url: 'https://picsum.photos/400/400?random=2',
-                      altText: 'Standard Sparkullager',
-                      width: 400,
-                      height: 400
-                    },
-                    priceRange: {
-                      minVariantPrice: {
-                        amount: '199.00',
-                        currencyCode: 'SEK'
-                      },
-                      maxVariantPrice: {
-                        amount: '199.00',
-                        currencyCode: 'SEK'
-                      }
-                    },
-                    variants: {
-                      nodes: [{
-                        id: 'gid://shopify/ProductVariant/2',
-                        availableForSale: true,
-                        price: {
-                          amount: '199.00',
-                          currencyCode: 'SEK'
-                        }
-                      }]
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        };
-      }
-      
-      // Return empty result for other queries
-      return {};
-    }
-  };
-
-  console.log('Returning mock context with working storefront');
+  const {storefront} = createStorefrontClient({
+    cache: await caches.open('hydrogen'),
+    waitUntil: executionContext.waitUntil.bind(executionContext),
+    i18n: {language: 'SV', country: 'SE'},
+    publicStorefrontToken: env.PUBLIC_STOREFRONT_API_TOKEN,
+    privateStorefrontToken: env.PRIVATE_STOREFRONT_API_TOKEN,
+    storeDomain: `https://${env.PUBLIC_STORE_DOMAIN}`,
+    storefrontApiVersion: env.PUBLIC_STOREFRONT_API_VERSION,
+    storefrontId: env.PUBLIC_STOREFRONT_ID,
+    storefrontHeaders: {
+      requestGroupId: request.headers.get('request-id'),
+      buyerIp: request.headers.get('oxygen-buyer-ip'),
+      cookie: request.headers.get('cookie'),
+    },
+  });
 
   return {
     env,
+    storefront,
     waitUntil: executionContext.waitUntil.bind(executionContext),
-    storefront: mockStorefront,
-    session: null,
-    sessionStorage: null,
-  } as any;
+  };
 } 

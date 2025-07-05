@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {Await, NavLink} from 'react-router';
+import {Await, NavLink} from '@remix-run/react';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 
 interface FooterProps {
@@ -128,3 +128,4 @@ function activeLinkStyle({isActive, isPending}: ActiveLinkStyleProps) {
     color: isPending ? 'grey' : 'white',
   };
 }
+

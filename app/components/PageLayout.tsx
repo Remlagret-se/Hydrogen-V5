@@ -1,4 +1,4 @@
-import { Await } from 'react-router';
+import { Await } from '@remix-run/react';
 import { Suspense } from 'react';
 import { AsideProvider } from '~/components/Aside';
 import { HeaderWithHeadlessUI, type HeaderProps } from '~/components/HeaderWithHeadlessUI';
@@ -227,3 +227,4 @@ export function PageLayout({
     </AsideProvider>
   );
 }
+

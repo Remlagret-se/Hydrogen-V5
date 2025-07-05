@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData} from 'react-router';
+import {useLoaderData} from '@remix-run/react';
 
 export async function loader({params, context}: LoaderFunctionArgs) {
   const {policyHandle} = params;
@@ -75,3 +75,4 @@ const POLICY_QUERY = `#graphql
     }
   }
 ` as const; 
+

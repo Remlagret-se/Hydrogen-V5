@@ -3,16 +3,19 @@ import {
   useNavigate,
   type FormProps,
   type Fetcher,
-} from 'react-router';
-import React, {useRef, useEffect} from 'react';
+} from '@remix-run/react';
+import React, {useRef, useEffect, useState} from 'react';
 import type {PredictiveSearchReturn} from '~/lib/search';
 import {useAside} from './Aside';
+import {useDebounce} from '~/lib/hooks/useDebounce';
+import {SearchCache} from '~/lib/search/cache';
 
 interface SearchFormPredictiveChildrenProps {
   fetchResults: (event: React.ChangeEvent<HTMLInputElement>) => void;
   goToSearch: () => void;
   inputRef: React.MutableRefObject<HTMLInputElement | null>;
   fetcher: Fetcher<PredictiveSearchReturn>;
+  isLoading: boolean;
 }
 
 interface SearchFormPredictiveProps extends Omit<FormProps, 'children'> {
@@ -23,8 +26,8 @@ interface SearchFormPredictiveProps extends Omit<FormProps, 'children'> {
 export const SEARCH_ENDPOINT = '/search';
 
 /**
- *  Search form component that sends search requests to the `/search` route
- **/
+ * Förbättrad sökformulärkomponent med debouncing och caching
+ */
 export function SearchFormPredictive({
   children,
   className = 'predictive-search-form',
@@ -34,33 +37,63 @@ export function SearchFormPredictive({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const aside = useAside();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Använd debounce för söktermen
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  /** Reset the input value and blur the input */
+  // Effekt för att hantera debounced sökningar
+  useEffect(() => {
+    if (!debouncedSearchTerm) return;
+
+    // Kolla först i cachen
+    const cachedResults = SearchCache.get(debouncedSearchTerm);
+    if (cachedResults) {
+      fetcher.load(`${SEARCH_ENDPOINT}?q=${debouncedSearchTerm}&limit=5&predictive=true`);
+      return;
+    }
+
+    // Om inget finns i cache, gör en ny sökning
+    setIsLoading(true);
+    fetcher.submit(
+      {q: debouncedSearchTerm, limit: 5, predictive: true},
+      {method: 'GET', action: SEARCH_ENDPOINT},
+    );
+  }, [debouncedSearchTerm, fetcher]);
+
+  // Spara resultat i cache när vi får svar
+  useEffect(() => {
+    if (fetcher.data && searchTerm) {
+      SearchCache.set(searchTerm, fetcher.data);
+      setIsLoading(false);
+    }
+  }, [fetcher.data, searchTerm]);
+
+  /** Återställ input och blur */
   function resetInput(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     event.stopPropagation();
     if (inputRef?.current?.value) {
       inputRef.current.blur();
+      setSearchTerm('');
     }
   }
 
-  /** Navigate to the search page with the current input value */
+  /** Navigera till söksidan */
   function goToSearch() {
     const term = inputRef?.current?.value;
     navigate(SEARCH_ENDPOINT + (term ? `?q=${term}` : ''));
     aside.close();
   }
 
-  /** Fetch search results based on the input value */
+  /** Hämta sökresultat baserat på input */
   function fetchResults(event: React.ChangeEvent<HTMLInputElement>) {
-    fetcher.submit(
-      {q: event.target.value || '', limit: 5, predictive: true},
-      {method: 'GET', action: SEARCH_ENDPOINT},
-    );
+    const term = event.target.value;
+    setSearchTerm(term);
   }
 
-  // ensure the passed input has a type of search, because SearchResults
-  // will select the element based on the input
+  // Säkerställ att input har type="search"
   useEffect(() => {
     inputRef?.current?.setAttribute('type', 'search');
   }, []);
@@ -71,7 +104,7 @@ export function SearchFormPredictive({
 
   return (
     <fetcher.Form {...props} className={className} onSubmit={resetInput}>
-      {children({inputRef, fetcher, fetchResults, goToSearch})}
+      {children({inputRef, fetcher, fetchResults, goToSearch, isLoading})}
     </fetcher.Form>
   );
 }

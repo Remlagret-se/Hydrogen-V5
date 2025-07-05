@@ -1,4 +1,4 @@
-import {Link} from 'react-router';
+import {Link} from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
 
@@ -171,3 +171,4 @@ function SearchResultsProducts({
 function SearchResultsEmpty() {
   return <p>No results, try a different search.</p>;
 }
+

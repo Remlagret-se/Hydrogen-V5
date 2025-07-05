@@ -1,7 +1,14 @@
-import { Fragment } from 'react';
-import { type Market, translateCollectionHandle, translateHandle } from '~/lib/utils/localization';
-import { Link } from 'react-router';
-import { ProductGrid } from './examples/ProductCard';
+import {Fragment} from 'react';
+import {
+  type Market,
+  translateCollectionHandle,
+  translateHandle,
+} from '~/lib/utils/localization';
+import {Link} from 'react-router';
+import {ProductGrid} from './examples/ProductCard';
+// import Incentives from './ui/Incentives';
+// import TrendingProducts from './ui/TrendingProducts';
+// import {ArrowRightIcon} from '@heroicons/react/24/outline';
 
 interface HomePageProps {
   menu: any;
@@ -19,31 +26,31 @@ const categories = [
     name: 'Spårkullager',
     href: '/collections/sparkullager',
     imageSrc: 'https://picsum.photos/800/800?random=17',
-    description: 'Högkvalitativa spårkullager för alla industrier'
+    description: 'Högkvalitativa spårkullager för alla industrier',
   },
   {
     name: 'Cylindriska rullager',
     href: '/collections/cylindriska-rullager',
     imageSrc: 'https://picsum.photos/800/800?random=18',
-    description: 'Precision cylindriska rullager för tung industri'
+    description: 'Precision cylindriska rullager för tung industri',
   },
   {
     name: 'Glidbussningar',
     href: '/collections/glidbussningar',
     imageSrc: 'https://picsum.photos/800/800?random=19',
-    description: 'Smörjfria glidbussningar för krävande applikationer'
+    description: 'Smörjfria glidbussningar för krävande applikationer',
   },
   {
     name: 'Speciallager',
     href: '/collections/speciallager',
     imageSrc: 'https://picsum.photos/800/800?random=20',
-    description: 'Speciallösningar för unika behov'
+    description: 'Speciallösningar för unika behov',
   },
   {
     name: 'Magnetlager',
     href: '/collections/magnetlager',
     imageSrc: 'https://picsum.photos/800/800?random=21',
-    description: 'Avancerade magnetlager för precisionsapplikationer'
+    description: 'Avancerade magnetlager för precisionsapplikationer',
   },
 ];
 
@@ -71,52 +78,52 @@ function getTexts(marketKey: string) {
   const texts = {
     hero: {
       title: {
-        'se': 'Välkommen till Remlagret',
-        'en': 'Welcome to Remlagret',
-        'de': 'Willkommen bei Remlagret',
-        'no': 'Velkommen til Remlagret',
-        'dk': 'Velkommen til Remlagret'
+        se: 'Välkommen till Remlagret',
+        en: 'Welcome to Remlagret',
+        de: 'Willkommen bei Remlagret',
+        no: 'Velkommen til Remlagret',
+        dk: 'Velkommen til Remlagret',
       },
       subtitle: {
-        'se': 'Ditt första val för högkvalitativa lager och industrikomponenter. Vi levererar till hela Norden med expertkunskap sedan 1985.',
-        'en': 'Your first choice for high-quality bearings and industrial components. We deliver throughout the Nordics with expert knowledge since 1985.',
-        'de': 'Ihre erste Wahl für hochwertige Lager und Industriekomponenten. Wir liefern in ganz Skandinavien mit Expertenwissen seit 1985.',
-        'no': 'Ditt første valg for høykvalitets lagre og industrikomponenter. Vi leverer til hele Norden med ekspertkunnskap siden 1985.',
-        'dk': 'Dit første valg for højkvalitets lejer og industrikomponenter. Vi leverer til hele Norden med ekspertviden siden 1985.'
+        se: 'Ditt första val för högkvalitativa lager och industrikomponenter. Vi levererar till hela Norden med expertkunskap sedan 1985.',
+        en: 'Your first choice for high-quality bearings and industrial components. We deliver throughout the Nordics with expert knowledge since 1985.',
+        de: 'Ihre erste Wahl für hochwertige Lager und Industriekomponenten. Wir liefern in ganz Skandinavien mit Expertenwissen seit 1985.',
+        no: 'Ditt første valg for høykvalitets lagre og industrikomponenter. Vi leverer til hele Norden med ekspertkunnskap siden 1985.',
+        dk: 'Dit første valg for højkvalitets lejer og industrikomponenter. Vi leverer til hele Norden med ekspertviden siden 1985.',
       },
       cta: {
-        'se': 'Se alla produkter',
-        'en': 'View all products',
-        'de': 'Alle Produkte anzeigen',
-        'no': 'Se alle produkter',
-        'dk': 'Se alle produkter'
-      }
+        se: 'Se alla produkter',
+        en: 'View all products',
+        de: 'Alle Produkte anzeigen',
+        no: 'Se alle produkter',
+        dk: 'Se alle produkter',
+      },
     },
     sections: {
       shopByCategory: {
-        'se': 'Handla efter kategori',
-        'en': 'Shop by Category',
-        'de': 'Nach Kategorie einkaufen',
-        'no': 'Handle etter kategori',
-        'dk': 'Shop efter kategori'
+        se: 'Handla efter kategori',
+        en: 'Shop by Category',
+        de: 'Nach Kategorie einkaufen',
+        no: 'Handle etter kategori',
+        dk: 'Shop efter kategori',
       },
       browseAll: {
-        'se': 'Se alla kategorier',
-        'en': 'Browse all categories',
-        'de': 'Alle Kategorien durchsuchen',
-        'no': 'Se alle kategorier',
-        'dk': 'Se alle kategorier'
+        se: 'Se alla kategorier',
+        en: 'Browse all categories',
+        de: 'Alle Kategorien durchsuchen',
+        no: 'Se alle kategorier',
+        dk: 'Se alle kategorier',
       },
       featuredProducts: {
-        'se': 'Utvalda produkter',
-        'en': 'Featured Products',
-        'de': 'Ausgewählte Produkte',
-        'no': 'Utvalgte produkter',
-        'dk': 'Udvalgte produkter'
-      }
-    }
+        se: 'Utvalda produkter',
+        en: 'Featured Products',
+        de: 'Ausgewählte Produkte',
+        no: 'Utvalgte produkter',
+        dk: 'Udvalgte produkter',
+      },
+    },
   };
-  
+
   return texts;
 }
 
@@ -124,14 +131,16 @@ const heroSections = [
   {
     title: 'Kullager',
     subtitle: 'Högkvalitativa kullager för alla behov',
-    description: 'Vi erbjuder ett brett sortiment av kullager från världens ledande tillverkare.',
+    description:
+      'Vi erbjuder ett brett sortiment av kullager från världens ledande tillverkare.',
     imageSrc: 'https://picsum.photos/800/800?random=1',
     link: '/collections/kullager',
   },
   {
     title: 'Rullager',
-    subtitle: 'Pålitliga rullager för tunga belastningar',
-    description: 'Specialiserade rullager för krävande applikationer och tunga belastningar.',
+    subtitle: 'Pålitliga rullager f��r tunga belastningar',
+    description:
+      'Specialiserade rullager för krävande applikationer och tunga belastningar.',
     imageSrc: 'https://picsum.photos/800/800?random=2',
     link: '/collections/rullager',
   },
@@ -195,39 +204,48 @@ const productImages = [
   'https://picsum.photos/600/600?random=16',
 ];
 
-export function HomePage({ 
-  menu, 
-  collections, 
-  sparkullager, 
-  sfariskaKullager, 
+export function HomePage({
+  menu,
+  collections,
+  sparkullager,
+  sfariskaKullager,
   products,
   currentMarket,
-  cart 
+  cart,
 }: HomePageProps) {
-  const marketKey = currentMarket.pathPrefix === '' ? 'se' : currentMarket.pathPrefix.slice(1);
+  const marketKey =
+    currentMarket.pathPrefix === '' ? 'se' : currentMarket.pathPrefix.slice(1);
   const texts = getTexts(marketKey);
 
   return (
-    <div style={{ backgroundColor: 'var(--color-background)' }}>
+    <div style={{backgroundColor: 'var(--color-background)'}}>
       {/* Enhanced Hero section */}
       <div className="relative overflow-hidden">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 opacity-50" />
-        
+
         <div className="relative pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
           <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
             <div className="sm:max-w-lg">
-              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl" style={{ color: 'var(--gray-12)' }}>
+              <h1
+                className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
+                style={{color: 'var(--gray-12)'}}
+              >
                 {texts.hero.title[marketKey] || texts.hero.title['se']}
               </h1>
-              <p className="mt-4 text-xl lg:text-2xl leading-relaxed" style={{ color: 'var(--gray-11)' }}>
+              <p
+                className="mt-4 text-xl lg:text-2xl leading-relaxed"
+                style={{color: 'var(--gray-11)'}}
+              >
                 {texts.hero.subtitle[marketKey] || texts.hero.subtitle['se']}
               </p>
-              
+
               {/* Enhanced stats */}
               <div className="mt-8 grid grid-cols-2 gap-4 sm:gap-6">
                 <div className="text-center p-4 bg-white/80 backdrop-blur rounded-lg shadow-sm">
-                  <div className="text-2xl font-bold text-blue-600">12,000+</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    12,000+
+                  </div>
                   <div className="text-sm text-gray-600">Produkter</div>
                 </div>
                 <div className="text-center p-4 bg-white/80 backdrop-blur rounded-lg shadow-sm">
@@ -236,7 +254,7 @@ export function HomePage({
                 </div>
               </div>
             </div>
-            
+
             <div>
               <div className="mt-10">
                 {/* Enhanced decorative image grid */}
@@ -308,12 +326,10 @@ export function HomePage({
                 <Link
                   to={`${currentMarket.pathPrefix}/collections/all`}
                   className="inline-flex items-center gap-2 rounded-xl border border-transparent px-8 py-4 text-center font-semibold text-white hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg"
-                  style={{ backgroundColor: 'var(--blue-9)' }}
+                  style={{backgroundColor: 'var(--blue-9)'}}
                 >
                   {texts.hero.cta[marketKey] || texts.hero.cta['se']}
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
+                  {/* <ArrowRightIcon className="w-5 h-5" /> */}
                 </Link>
               </div>
             </div>
@@ -321,204 +337,67 @@ export function HomePage({
         </div>
       </div>
 
-      {/* Enhanced Category Section */}
-      <div style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="py-16 sm:py-24 xl:mx-auto xl:max-w-7xl xl:px-8">
-          <div className="px-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 xl:px-0">
-            <h2 className="text-3xl font-bold tracking-tight" style={{ color: 'var(--gray-12)' }}>
-              {texts.sections.shopByCategory[marketKey] || texts.sections.shopByCategory['se']}
-            </h2>
-            <Link 
-              to={`${currentMarket.pathPrefix}/collections`}
-              className="hidden text-sm font-semibold hover:opacity-80 sm:block transition-opacity group"
-              style={{ color: 'var(--blue-9)' }}
-            >
-              {texts.sections.browseAll[marketKey] || texts.sections.browseAll['se']}
-              <span aria-hidden="true" className="ml-1 group-hover:translate-x-1 transition-transform duration-200 inline-block"> &rarr;</span>
-            </Link>
-          </div>
+      {/* Trending Products section */}
+      {/* <TrendingProducts products={products} currentMarket={currentMarket} /> */}
 
-          <div className="mt-4 flow-root">
-            <div className="-my-2">
-              <div className="relative box-content h-96 overflow-x-auto py-2 xl:overflow-visible">
-                <div className="absolute flex space-x-8 px-4 sm:px-6 lg:px-8 xl:relative xl:grid xl:grid-cols-5 xl:gap-x-8 xl:space-x-0 xl:px-0">
-                  {categories.map((category) => (
-                    <Link
-                      key={category.name}
-                      to={`${currentMarket.pathPrefix}${category.href}`}
-                      className="relative flex h-96 w-64 flex-col overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 xl:w-auto group"
-                    >
-                      <span aria-hidden="true" className="absolute inset-0">
-                        <img 
-                          alt={category.description} 
-                          src={category.imageSrc} 
-                          className="size-full object-cover group-hover:scale-110 transition-transform duration-300" 
-                        />
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent"
-                      />
-                      <span className="relative mt-auto p-6 text-center">
-                        <h3 className="text-xl font-bold text-white mb-2">{category.name}</h3>
-                        <p className="text-sm text-gray-200 opacity-90">{category.description}</p>
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 px-4 sm:hidden">
-            <Link 
-              to={`${currentMarket.pathPrefix}/collections`}
-              className="block text-sm font-semibold hover:opacity-80 transition-opacity group"
-              style={{ color: 'var(--blue-9)' }}
-            >
-              {texts.sections.browseAll[marketKey] || texts.sections.browseAll['se']}
-              <span aria-hidden="true" className="ml-1 group-hover:translate-x-1 transition-transform duration-200 inline-block"> &rarr;</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Collection Category section */}
-      <section aria-labelledby="category-heading" style={{ backgroundColor: 'var(--gray-1)' }}>
-        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 id="category-heading" className="text-3xl font-bold tracking-tight mb-4" style={{ color: 'var(--gray-12)' }}>
-              Populära kategorier
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Upptäck våra mest efterfrågade produktkategorier för industri och verkstad
-            </p>
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-6 lg:gap-8">
-            {collections.slice(0, 3).map((collection, index) => (
-              <div 
-                key={collection.id}
-                className={`group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] ${
-                  index === 0 ? 'sm:row-span-2 aspect-[4/5] sm:aspect-square' : 'aspect-[2/1] sm:aspect-auto'
-                }`}
-              >
-                <img
-                  alt={collection.image?.altText || collection.title}
-                  src={collection.image?.url || `https://picsum.photos/800/600?random=33`}
-                  className="absolute size-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/60"
-                />
-                <div className="absolute inset-0 flex items-end p-6">
-                  <div className="text-white">
-                    <h3 className="font-bold text-xl mb-2">
-                      <Link to={`${currentMarket.pathPrefix}/collections/${translateHandle(collection.handle, 'en', marketKey)}`}>
-                        <span className="absolute inset-0" />
-                        {collection.title}
-                      </Link>
-                    </h3>
-                    <p className="text-sm text-gray-200 mb-3 line-clamp-2">
-                      {collection.description || 'Högkvalitativa produkter för professionell användning'}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-sm font-medium text-white/90 group-hover:text-white transition-colors">
-                      {marketKey === 'se' ? 'Handla nu' : 'Shop now'}
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link 
-              to={`${currentMarket.pathPrefix}/collections`}
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors duration-200"
-            >
-              {texts.sections.browseAll[marketKey] || texts.sections.browseAll['se']}
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Featured products section */}
-      <section aria-labelledby="favorites-heading" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 id="favorites-heading" className="text-3xl font-bold tracking-tight mb-4" style={{ color: 'var(--gray-12)' }}>
-              {texts.sections.featuredProducts[marketKey] || texts.sections.featuredProducts['se']}
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Våra mest populära produkter som kunder väljer gång på gång
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <ProductGrid products={products} />
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link 
-              to={`${currentMarket.pathPrefix}/collections/all`}
-              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-semibold rounded-xl text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
-              style={{ backgroundColor: 'var(--blue-9)' }}
-            >
-              Se alla produkter
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Incentives section */}
+      {/* <Incentives /> */}
 
       {/* Enhanced CTA section */}
       <section aria-labelledby="sale-heading" className="relative">
         <div className="overflow-hidden pt-32 sm:pt-14">
-          <div style={{ backgroundColor: 'var(--gray-12)' }} className="relative">
+          <div style={{backgroundColor: 'var(--gray-12)'}} className="relative">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10">
-              <svg className="absolute inset-0 h-full w-full" fill="currentColor">
+              <svg
+                className="absolute inset-0 h-full w-full"
+                fill="currentColor"
+              >
                 <defs>
-                  <pattern id="heropattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <pattern
+                    id="heropattern"
+                    x="0"
+                    y="0"
+                    width="40"
+                    height="40"
+                    patternUnits="userSpaceOnUse"
+                  >
                     <circle cx="20" cy="20" r="2" />
                   </pattern>
                 </defs>
                 <rect width="100%" height="100%" fill="url(#heropattern)" />
               </svg>
             </div>
-            
+
             <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="relative pt-48 pb-16 sm:pb-24">
                 <div className="max-w-2xl">
-                  <h2 id="sale-heading" className="text-4xl font-bold tracking-tight text-white md:text-6xl leading-tight">
-                    {marketKey === 'se' ? 'Upptäck vårt sortiment.' : 'Discover our range.'}
+                  <h2
+                    id="sale-heading"
+                    className="text-4xl font-bold tracking-tight text-white md:text-6xl leading-tight"
+                  >
+                    {marketKey === 'se'
+                      ? 'Upptäck vårt sortiment.'
+                      : 'Discover our range.'}
                     <br />
                     <span className="text-blue-400">
-                      {marketKey === 'se' ? 'Över 12,000 artiklar.' : 'Over 12,000 items.'}
+                      {marketKey === 'se'
+                        ? 'Över 12,000 artiklar.'
+                        : 'Over 12,000 items.'}
                     </span>
                   </h2>
                   <p className="mt-6 text-lg text-gray-300 leading-relaxed">
-                    Från standardlager till speciallösningar - vi har det du behöver för din industri. 
-                    Expertrådgivning och snabb leverans till hela Norden.
+                    Från standardlager till speciallösningar - vi har det du
+                    behöver för din industri. Expertrådgivning och snabb
+                    leverans till hela Norden.
                   </p>
                   <div className="mt-8">
-                    <Link 
+                    <Link
                       to={`${currentMarket.pathPrefix}/collections/all`}
                       className="inline-flex items-center gap-2 font-semibold text-white hover:text-blue-300 transition-colors duration-200 text-lg group"
                     >
                       {texts.hero.cta[marketKey] || texts.hero.cta['se']}
-                      <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
+                      {/* <ArrowRightIcon className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-200" /> */}
                     </Link>
                   </div>
                 </div>
@@ -582,4 +461,4 @@ export function HomePage({
       </section>
     </div>
   );
-} 
+}

@@ -2,7 +2,7 @@
 // INGEN 'use client' behövs i Hydrogen/Remix!
 
 import { Fragment, useState } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink } from '@remix-run/react';
 import {
   Dialog,
   DialogBackdrop,

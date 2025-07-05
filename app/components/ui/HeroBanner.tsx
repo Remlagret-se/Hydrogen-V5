@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from '@remix-run/react';
 
 interface HeroBannerProps {
   title: string;
@@ -57,3 +57,4 @@ export function HeroBanner({
     </div>
   );
 }
+

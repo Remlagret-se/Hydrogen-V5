@@ -1,4 +1,4 @@
-import {Link, useNavigate} from 'react-router';
+import {Link, useNavigate} from '@remix-run/react';
 import {type MappedProductOptions} from '@shopify/hydrogen';
 import type {
   Maybe,
@@ -149,3 +149,4 @@ function ProductOptionSwatch({swatch, name}: ProductOptionSwatchProps) {
     </div>
   );
 }
+

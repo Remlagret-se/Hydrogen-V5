@@ -1,33 +1,43 @@
-'use client';
+import {motion} from 'framer-motion';
+import {OptimizedImage} from './OptimizedImage';
+import {useCartStore} from '~/lib/cartStore';
 
-import { motion } from 'framer-motion';
-import { OptimizedImage } from './OptimizedImage';
-import { useCartStore } from '~/lib/cartStore';
+interface ShopifyImage {
+  id?: string;
+  url: string;
+  altText?: string | null;
+  width?: number;
+  height?: number;
+}
 
 interface ProductCardProps {
   product: {
-  id: string;
-  title: string;
+    id: string;
+    title: string;
     price: string;
-    image: string;
+    image?: string;
+    featuredImage?: ShopifyImage;
     description?: string;
   };
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({product}: ProductCardProps) {
   const addToCart = useCartStore((state) => state.addItem);
 
   return (
     <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{scale: 1.05}}
+      whileTap={{scale: 0.95}}
       className="bg-white rounded-lg shadow-lg overflow-hidden"
     >
       <OptimizedImage
+        data={product.featuredImage}
         src={product.image}
         alt={product.title}
-        className="w-full h-48 object-cover"
-        />
+        className="w-full h-48"
+        aspectRatio="1"
+        sizes="(min-width: 768px) 33vw, 50vw"
+      />
       <div className="p-4">
         <h3 className="text-lg font-semibold">{product.title}</h3>
         {product.description && (
@@ -35,14 +45,16 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
         <p className="text-gray-800 font-bold mt-2">{product.price}</p>
         <motion.button
-          whileHover={{ backgroundColor: '#4F46E5' }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => addToCart({
-            id: product.id,
-            title: product.title,
-            price: parseFloat(product.price.replace(/[^0-9.-]+/g, '')),
-            quantity: 1
-          })}
+          whileHover={{backgroundColor: '#4F46E5'}}
+          whileTap={{scale: 0.95}}
+          onClick={() =>
+            addToCart({
+              id: product.id,
+              title: product.title,
+              price: parseFloat(product.price.replace(/[^0-9.-]+/g, '')),
+              quantity: 1,
+            })
+          }
           className="mt-4 w-full bg-indigo-600 text-white py-2 rounded transition-colors"
         >
           Lägg i varukorg
@@ -50,4 +62,4 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
     </motion.div>
   );
-} 
+}
